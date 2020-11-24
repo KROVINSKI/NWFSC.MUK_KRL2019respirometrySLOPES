@@ -203,7 +203,7 @@ for(i in 1:length(dSlopes$KrillID)){
 # KrillSlopes <- cbind(dSlopes, Rsq)
 # View(KrilSlopes)
 
-
+krillslopes <- merge(dtotal, dSlopes, by="KrillID")
 
 
 ```
@@ -213,16 +213,18 @@ for(i in 1:length(dSlopes$KrillID)){
 ```{r dealing with blanks}
 
 #*********************************
-## 5.) Analysis, Respirometry - Correcting the Slope  
+## 5.) Analysis, Respirometry - Correcting the Slope for Blanks 
 #*********************************
 
 #blank corrected slope and blank-size corrected slope
-#see blankslopecorrection.R for more comments and detail
-x <- subset(dtotal2, dtotal2$MOATS == 0)
+#see blankslopecorrection.R for more comments and detail (this was 2014~2016 code Paul may have)
+# x is equal to the blank vials  
+x <- subset(dtotal, dtotal$MOATS == "blank")
 row.names(x) <- NULL
 #View(x)
 x$slope
 blankmeanslope <- tapply(x$slope, x$TrialID, mean)
+
 print(blankmeanslope)
 is.numeric(blankmeanslope)
 #now we have a mean of the blanks in each separate trial!
