@@ -195,7 +195,10 @@ for(i in 1:length(dSlopes$KrillID)){
 
 #now for R^2!!
 
-# 
+
+##  # the above loop negates creating a matrix correct?
+
+
 # Rsq <- sapply(dSlopes,function(x) summary(x)[[r.squared]])
 # t(Rsq) #transposes rows and columns
 # Rsq <- data.matrix(Rsq)
@@ -225,6 +228,11 @@ row.names(x) <- NULL
 x$slope
 blankmeanslope <- x$slope 
 
+
+
+## # what function am I trying to apply? 
+## what is the ragged array and what is the function? 
+
 blankmeanslope <- tapply(x$slope, x$TrialID, mean)
 
 print(blankmeanslope)
@@ -233,7 +241,7 @@ is.numeric(blankmeanslope)
 #View(blankmeanslope)
 as.data.frame(blankmeanslope)
 #add a row that is the trial ID
-blankmeanslope <- cbind(blankmeanslope, levels(dtotal2$TrialID))
+blankmeanslope <- cbind(blankmeanslope, levels(dtotal$TrialID))
 #View(blankmeanslope) #good so far!! 20 july
 blankmeanslope[,1] <- as.numeric(blankmeanslope[,1]) #make sure it stays numeric
 
@@ -244,7 +252,7 @@ blankmeanslope[,1] <- as.numeric(blankmeanslope[,1]) #make sure it stays numeric
 #rename column 2 as TrialID so it matches up with the column in dtotal2
 colnames(blankmeanslope)[2] <- "TrialID"
 #View(blankmeanslope)
-dtotal3 <- merge(dtotal2, blankmeanslope, by="TrialID")
+dtotalslope <- merge(dtotal2, blankmeanslope, by="TrialID")
 #View(dtotal3) #all still good 20 july
 dtotal3$blankmeanslope <- as.numeric(as.character(dtotal3$blankmeanslope))
 
