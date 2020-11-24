@@ -223,6 +223,8 @@ x <- subset(dtotal, dtotal$MOATS == "blank")
 row.names(x) <- NULL
 #View(x)
 x$slope
+blankmeanslope <- x$slope 
+
 blankmeanslope <- tapply(x$slope, x$TrialID, mean)
 
 print(blankmeanslope)
