@@ -213,10 +213,10 @@ krillslopes <- merge(dtotal, dSlopes, by="KrillID")
 
 
 
-```{r dealing with blanks}
+```{r 7.) Analysis, Respirometry - Correcting the Slope for Blanks}
 
 #*********************************
-## 5.) Analysis, Respirometry - Correcting the Slope for Blanks 
+## 7.) Analysis, Respirometry - Correcting the Slope for Blanks 
 #*********************************
 
 #blank corrected slope and blank-size corrected slope
@@ -247,23 +247,25 @@ blankmeanslope[,1] <- as.numeric(blankmeanslope[,1]) #make sure it stays numeric
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
+#  # # T/S this section
 
-
-#rename column 2 as TrialID so it matches up with the column in dtotal2
-colnames(blankmeanslope)[2] <- "TrialID"
-#View(blankmeanslope)
-dtotalslope <- merge(dtotal2, blankmeanslope, by="TrialID")
-#View(dtotal3) #all still good 20 july
-dtotal3$blankmeanslope <- as.numeric(as.character(dtotal3$blankmeanslope))
+# # alread have trial ID 
+# #rename column 2 as TrialID so it matches up with the column in dtotal2
+# colnames(blankmeanslope)[2] <- "TrialID"
+# #View(blankmeanslope)
+# dtotalslope <- merge(dtotal2, blankmeanslope, by="TrialID")
+# #View(dtotal3) #all still good 20 july
+# dtotal3$blankmeanslope <- as.numeric(as.character(dtotal3$blankmeanslope))
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-
-dtotal3$slope <- as.numeric(dtotal3$slope)
-
-#20 july: the blanks themselves are an issue because they're getting the average of themselves and the other blanks taken away from them. what do? 
-dtotal3$blankcorrslope <- (dtotal3$slope - dtotal3$blankmeanslope)
-#View(dtotal3)
+#  # # T/S this section 
+# # still working off dtotal 3
+# dtotal3$slope <- as.numeric(dtotal3$slope)
+# 
+# #20 july: the blanks themselves are an issue because they're getting the average of themselves and the other blanks taken away from them. what do? 
+# dtotal3$blankcorrslope <- (dtotal3$slope - dtotal3$blankmeanslope)
+# #View(dtotal3)
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
