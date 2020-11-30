@@ -208,6 +208,8 @@ for(i in 1:length(dSlopes$KrillID)){
 
 krillslopes <- merge(dtotal, dSlopes, by="KrillID")
 
+### T/S r squared values seem all too similar
+
 
 ```
 
@@ -232,6 +234,7 @@ blankmeanslope <- x$slope
 
 ## # what function am I trying to apply? 
 ## what is the ragged array and what is the function? 
+# breaking at line 239
 
 blankmeanslope <- tapply(x$slope, x$TrialID, mean)
 
