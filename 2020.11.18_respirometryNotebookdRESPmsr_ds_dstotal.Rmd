@@ -84,7 +84,7 @@ setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES")
 #*********************************
 
 ## Method 1 - 1 file for the four trials
-#get all the files in the defined working directory that are in csv format
+#get all the files in the defined working directory that are in csv format  
 dRESP <- read.csv(file = "KRILL_Resp_alltrials.csv", stringsAsFactors = FALSE)
 dim(dRESP)
 
