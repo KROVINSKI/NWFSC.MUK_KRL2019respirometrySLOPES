@@ -103,7 +103,7 @@ write.csv(dRESPanimal, file = "2020.11.30_krillanimaldata.csv", row.names = FALS
 #dRESPmsr represents the measurements made by the presense optical device for Dissolved Oxygen 
 dRESPmsr <- merge(dRESP, dRESPanimal, by="SensorName")
 
-write.csv(dRESPmsr, file = "2020.11.30_respirometrymeasurements.csv", row.names = FALSE)
+write.csv(dRESPmsr, file = "2020.12.01_respirometrymeasurements.csv", row.names = FALSE)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
@@ -112,8 +112,12 @@ write.csv(dRESPmsr, file = "2020.11.30_respirometrymeasurements.csv", row.names 
 # levels(dRESP$MOATS)
 
 
-dRESPmsr <- dRESPmsr %>% filter(!MOATS %in% c("3", "4", "5", "11")) %>%
-  filter(Treatment %in% c("CUR", "CHG", "TMP")) 
+# dRESPmsr <- dRESPmsr %>% filter(!MOATS %in% c("3", "4", "5", "11")) %>%
+#   filter(Treatment %in% c("CUR", "CHG", "TMP")) 
+# 
+# 
+# dRESPmsr <- dRESPmsr %>% filter(!MOATS %in% c("3", "4", "5", "11")) %>%
+#   filter(Treatment %in% c("CUR", "CHG", "TMP", "n/a")) 
 
 
 ```
@@ -309,11 +313,16 @@ ggplot(dRESPmsr, aes(x = Time, y = actualDOmg, colour = SensorName)) +
 
 
 # 7.) Plotting Percent DO by Trial (80%)
+
+## 7.x Placeholder for load map graphic
+
 ## 7.1) PLotting Percent DO filtering Trial 1
 ```{r 7.1) PLotting Percent DO filtering Trial 1}
 
 Trial1percentDO <- filter(dRESPmsr, TrialID == "Trial01")
 
+
+levels(Trial1percentDO$Treatment)
 
 ggplot(Trial1percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
   geom_point(size = 1) +
@@ -327,6 +336,8 @@ ggplot(Trial1percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
 
 ```
 
+
+## 7.x Placeholder for load map graphic
 
 ## 7.2) PLotting Percent DO filtering Trial 2
 ```{r 7.2) PLotting Percent DO filtering Trial 2}
@@ -347,6 +358,8 @@ ggplot(Trial2percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
 ```
 
 
+## 7.x Placeholder for load map graphic
+
 ## 7.3) PLotting Percent DO filtering Trial 3
 ```{r 7.3) PLotting Percent DO filtering Trial 3}
 
@@ -366,6 +379,8 @@ ggplot(Trial3percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
 ```
 
 
+## 7.x Placeholder for load map graphic
+
 ## 7.4) PLotting Percent DO filtering Trial 4
 ```{r 7.4) PLotting Percent DO filtering Trial 4}
 
@@ -383,6 +398,10 @@ ggplot(Trial4percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
 
 
 ```
+
+
+
+
 
 Notes to Self
 apply the blanks within trial
@@ -453,7 +472,7 @@ dtotal <- merge(dRESPmsr, ds, by = "KrillID")
 
 unique(dtotal$KrillID)
 UniqueKrillIDs <- levels(dtotal$KrillID)
-write.table(UniqueKrillIDs, file = "2020.11.30dtotal_UniqueKrillIDs.csv")
+write.table(UniqueKrillIDs, file = "2020.12.01dtotal_UniqueKrillIDs.csv")
 #kable(UniqueSensorNames)
 
 
@@ -475,7 +494,7 @@ dtotal[is.na(dtotal$delta_t),]
 unique(dtotal$KrillID)
 
 
-write.csv(dtotal, file = "2020.11.17_dtotal.csv", row.names = FALSE)
+write.csv(dtotal, file = "2020.12.01_dtotal.csv", row.names = FALSE)
 
 
 #how best to run the lmlist over

@@ -323,13 +323,30 @@ dSlopes$CorrSlope <- ""
 # trial03animalslopes <- subset(animalslopes, TrialID == "Trial03")
 # trial04animalslopes <- subset(animalslopes, TrialID == "Trial04")
 
-dSlopes$CorrSlope <- dSlopes/
+
+dSlopes$CorrSlope <- as.numeric(dSlopes$CorrSlope)
+dSlopes$slope <- as.numeric(dSlopes$slope)
+
+dSlopes$CorrSlope <- ((subset(dSlopes$slope, dSlopes$TrialID == "Trial01"& dSlopes$MOATS != "blank"))/blankmeanslope1) |
+((subset(dSlopes$slope, dSlopes$TrialID == "Trial02" & dSlopes$MOATS != "blank"))/blankmeanslope2) |
+((subset(dSlopes$slope, dSlopes$TrialID == "Trial03" & dSlopes$MOATS != "blank"))/blankmeanslope3) | 
+((subset(dSlopes$slope, dSlopes$TrialID == "Trial04" & dSlopes$MOATS != "blank"))/blankmeanslope4) 
 
 
 
+Trial01corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial01"& dSlopes$MOATS != "blank")/blankmeanslope1 
 
-# dRESPmsr <- dRESPmsr %>% filter(!MOATS %in% c("3", "4", "5", "11")) %>%
-#   filter(Treatment %in% c("CUR", "CHG", "TMP", "n/a")) 
+Trial02corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial02"& dSlopes$MOATS != "blank")/blankmeanslope2 
+
+Trial03corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial02"& dSlopes$MOATS != "blank")/blankmeanslope3
+
+Trial04corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial02"& dSlopes$MOATS != "blank")/blankmeanslope4
+
+
+dSlopes$CorrSlope <- trial01corslope case_when(dSlopes$TrialID == "Trial01"& dSlopes$MOATS != "blank")
+
+dSlopes <- dSlopes %>% mutate(CorrSlope=case_when((dSlopes$TrialID == "Trial01") & (dSlopes$MOATS != "blank")))
+
 
 
 dtotal3$blanksizecorrslope <- dtotal3$blankcorrslope/dtotal3$Size
