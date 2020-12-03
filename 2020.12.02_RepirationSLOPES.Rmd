@@ -82,12 +82,13 @@ setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES")
 #*********************************
 
 
-#get all the files in the defined working directory that are in csv format  
-dRESP <- read.csv(file = "KRILL_Resp_alltrials.csv", stringsAsFactors = FALSE)
-dim(dRESP)
+# #get all the files in the defined working directory that are in csv format  
+# dRESP <- read.csv(file = "KRILL_Resp_alltrials.csv", stringsAsFactors = FALSE)
+# dim(dRESP)
+# 
+# write.csv(dRESP, file = "2020.11.30_presenseSENSORONLY.alltrials.data.csv", row.names = FALSE)
 
-write.csv(dRESP, file = "2020.11.30_presenseSENSORONLY.alltrials.data.csv", row.names = FALSE)
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 # dRESPanimal represents just the animal, vial, MOATs, etc.  
 dRESPanimal <- read.csv(file = "RespirometryTrials_all.Animal.Info.csv") 
@@ -103,6 +104,8 @@ dim(dRESPanimal)
 dRESPmsr <- read.csv(file = "2020.11.18_respirometrymeasurements.csv", stringsAsFactors = FALSE)
 
 dim(dRESPmsr)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
 unique(dRESPmsr$KrillID)
@@ -129,19 +132,20 @@ oxygen <- vialVol * dRESPmsr$actualDOmg
 
 dRESPmsr$oxygen <- oxygen
 
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 #nmol/vial; conversion for L to ml and umol to nmol cancels
-
-
 #slope funcion of 2 vectors
 slope <- function(y,x){
   return(lm(y~x, na.action = na.omit)$coefficients[2])
 }
   
-
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 dRESPmsr$delta_t <- as.numeric(dRESPmsr$delta_t)
 
 cSlopes <- by(dRESPmsr, dRESPmsr$KrillID, function(x){ slope(x$oxygen, x$delta_t)})
 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 #creating a data frame instead of a list 
 ds <- as.data.frame(sapply(cSlopes, I))
@@ -161,6 +165,7 @@ ds$KrillID <- row.names(ds)
 #View(dslopes)
 dtotal <- merge(dRESPmsr, ds, by = "KrillID")
 #View(dtotal)
+
 ```
 
 
@@ -170,13 +175,6 @@ dtotal$KrillID <- factor(dtotal$KrillID)
 nlevels(dtotal$KrillID)
 
 
-#how best to run the lmlist over
-# group and then run a function tidyverse
-# group by krill ID and then run the function
-
-# levels(dtotal$KrillID)
-# GRP_dtotal <- dtotal %>% group_by(KrillID)
-# dtotal <- GRP_dtotal
 ```
 
 
@@ -200,29 +198,7 @@ for(i in 1:length(dSlopes$KrillID)){
   dSlopes$rsq[i] <- summary(m)$r.squared
 }
 
-# how to extract p value ... likely pulling it from the summary that the slope is greater than zero
-# how likely if the krill held their breath for 2 hours....
-# can't use the trial if krill went free diving in the vial
-
-
-# slopes <- coef(info)[2]
-# #print(slopes)
-# dslopes <- data.matrix(slopes)
-# #View(dref)
-# mode(dslopes[,1])
-# dslopes <- as.data.frame(dslopes)
-# dslopes$slope <- dslopes$delta_t
-# dslopes$delta_t <- NULL
-# #View(dslopes)
-
-#now for R^2!!
-
-# Rsq <- sapply(dSlopes,function(x) summary(x)[[r.squared]])
-# t(Rsq) #transposes rows and columns
-# Rsq <- data.matrix(Rsq)
-# #View(Rsq)
-# KrillSlopes <- cbind(dSlopes, Rsq)
-# View(KrilSlopes)
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 krillslopes <- merge(dtotal, dSlopes, by="KrillID")
 
@@ -230,6 +206,8 @@ dSlopes$SensorName <- ""
 
 dSlopes <- dSlopes %>% group_by(KrillID)
 dRESPanimal <- dRESPanimal %>% group_by(SensorName)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 dSlopes$KrillID <- as.character(dSlopes$KrillID)
 dSlopes$SensorName <- dRESPanimal$SensorName
@@ -241,12 +219,12 @@ dSlopes$VialNum<- dRESPanimal$GlassVialNumber
 dSlopes$TelsonLength<- dRESPanimal$TelsonLength..mm.
 dSlopes$WetWeight<- dRESPanimal$Size
 
-
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 ```
 
 
-
+# 7.) Analysis, Respirometry - Correcting the Slope for Blanks
 ```{r 7.) Analysis, Respirometry - Correcting the Slope for Blanks}
 
 #*********************************
@@ -256,14 +234,13 @@ dSlopes$WetWeight<- dRESPanimal$Size
 #blank corrected slope and blank-size corrected slope
 ## need to correct all slopes with the blanks' slope
 ## this is the background respiration of whatever phtyos and instrument drift
-
 ## create a mean blank slope per trial
 ## merge with the master(krill slopes) and "correct" all slopes against mean value (per trial)
-
-## maybe an overall blank slope average
 # x is equal to the blank vials  
 
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
+# Creating four seperate means from the blank vials per trial
 x <- subset(dSlopes, dSlopes$MOATS == "blank")
 
 xtrial1 <- subset(x, x$TrialID == "Trial01")
@@ -276,86 +253,71 @@ blankmeanslope2 <- mean(xtrial2$slope)
 blankmeanslope3 <- mean(xtrial3$slope)
 blankmeanslope4 <- mean(xtrial4$slope)
 
-# #2014 Paul comments/Direction 
-# print(blankmeanslope)
-# is.numeric(blankmeanslope)
-# #now we have a mean of the blanks in each separate trial!
-# #View(blankmeanslope)
-# as.data.frame(blankmeanslope)
-# #add a row that is the trial ID
-# blankmeanslope <- cbind(blankmeanslope, levels(dtotal$TrialID))
-# #View(blankmeanslope) #good so far!! 20 july
-# blankmeanslope[,1] <- as.numeric(blankmeanslope[,1]) #make sure it stays numeric
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-
-#  # # T/S this section ... I don't think we need this anymore
-
-# # alread have trial ID 
-# #rename column 2 as TrialID so it matches up with the column in dtotal2
-# colnames(blankmeanslope)[2] <- "TrialID"
-# #View(blankmeanslope)
-# dtotalslope <- merge(dtotal2, blankmeanslope, by="TrialID")
-# #View(dtotal3) #all still good 20 july
-# dtotal3$blankmeanslope <- as.numeric(as.character(dtotal3$blankmeanslope))
-
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-
-#  # # T/S this section ... I don't think we need this anymore
-# # still working off dtotal 3
-# dtotal3$slope <- as.numeric(dtotal3$slope)
-# 
-# #20 july: the blanks themselves are an issue because they're getting the average of themselves and the other blanks taken away from them. what do? 
-# dtotal3$blankcorrslope <- (dtotal3$slope - dtotal3$blankmeanslope)
-# #View(dtotal3)
-
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-
-
-
-####blank and size corrected slope
-
-
+#Creating new corrected varibles for slopes adjusted for blank vials and size of animal
 dSlopes$CorrSlope <- ""
-# animalslopes <- subset(dSlopes, Treatment != "n/a")
-# trial01animalslopes <- subset(animalslopes, TrialID == "Trial01")
-# trial02animalslopes <- subset(animalslopes, TrialID == "Trial02")
-# trial03animalslopes <- subset(animalslopes, TrialID == "Trial03")
-# trial04animalslopes <- subset(animalslopes, TrialID == "Trial04")
-
-
 dSlopes$CorrSlope <- as.numeric(dSlopes$CorrSlope)
 dSlopes$slope <- as.numeric(dSlopes$slope)
 
-dSlopes$CorrSlope <- ((subset(dSlopes$slope, dSlopes$TrialID == "Trial01"& dSlopes$MOATS != "blank"))/blankmeanslope1) |
-((subset(dSlopes$slope, dSlopes$TrialID == "Trial02" & dSlopes$MOATS != "blank"))/blankmeanslope2) |
-((subset(dSlopes$slope, dSlopes$TrialID == "Trial03" & dSlopes$MOATS != "blank"))/blankmeanslope3) | 
-((subset(dSlopes$slope, dSlopes$TrialID == "Trial04" & dSlopes$MOATS != "blank"))/blankmeanslope4) 
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+# Conditonal Statement directing certain means to their respective trials
+dSlopes <- dSlopes %>% mutate(CorrSlope=case_when(
+    (dSlopes$MOATS == "blank" ~ dSlopes$slope),
+    (dSlopes$TrialID == "Trial01" ~ dSlopes$slope-blankmeanslope1),
+    (dSlopes$TrialID == "Trial02" ~ dSlopes$slope-blankmeanslope2),
+    (dSlopes$TrialID == "Trial03" ~ dSlopes$slope-blankmeanslope3),
+    (dSlopes$TrialID == "Trial04" ~ dSlopes$slope-blankmeanslope4),
+    TRUE ~ as.numeric(0)
+))
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+# Correcting for the size of the animal 
+dSlopes$SizedSlope <- ""
+dSlopes$WetWeight <- as.numeric(dSlopes$WetWeight)
+dSlopes$WetWeightSlope <- dSlopes$CorrSlope/dSlopes$WetWeight
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
 
-Trial01corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial01"& dSlopes$MOATS != "blank")/blankmeanslope1 
-
-Trial02corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial02"& dSlopes$MOATS != "blank")/blankmeanslope2 
-
-Trial03corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial02"& dSlopes$MOATS != "blank")/blankmeanslope3
-
-Trial04corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial02"& dSlopes$MOATS != "blank")/blankmeanslope4
+```
 
 
-dSlopes$CorrSlope <- trial01corslope case_when(dSlopes$TrialID == "Trial01"& dSlopes$MOATS != "blank")
+```{r 7.b) Analysis, Respirometry - Correcting the Slope for Blanks}
 
-dSlopes <- dSlopes %>% mutate(CorrSlope=case_when((dSlopes$TrialID == "Trial01") & (dSlopes$MOATS != "blank")))
+#*********************************
+## 7.b) Trial01 Corrected Slope Plot 
+#*********************************
+
+# T/S how to get the slope to be plotted since we've removed "time"
+
+# dtotSLOPE <- merge(x=krillslopes, y=dSlopes, by = "KrillID")
+
+# Trial1CorrSlope<- filter(dtotSLOPE, TrialID == "Trial01")
+# levels(Trial1CorrSlope$Treatment)
+# 
+#  Trial1CorrSlope$Treatment<- Trial1CorrSlope$Treatment.y
+# 
+# ggplot(Trial1CorrSlope, aes(x = Time, y = CorrSlope, colour = KrillID)) +
+#   geom_point(size = 1) +
+#   geom_smooth(method = "lm") +
+#   #scale_y_continuous(breaks=seq(250,950,by=50))   +
+#   ggtitle("Trial01 Percent DO") +
+#   facet_wrap(~ Treatment) + 
+#   geom_hline(yintercept = c(.8), colour = "red") +
+#   theme_bw()
+
+```
 
 
 
-dtotal3$blanksizecorrslope <- dtotal3$blankcorrslope/dtotal3$Size
-#View(dtotal3)
-mode(dtotal3$blanksizecorrslope)
-#y <- subset(dtotal3, dtotal3$blanksizecorrslope != "lnf")
-#View(y)#dealing with the blank vials' size being zero
-#View(dtotal3)
-View(dtotal3)
+## 7.a Summary Statistics on Corrected Slopes
+```{r 7.a Summary Statistics on Corrected Slopes}
+
+#*********************************
+## 7.) Analysis, Respirometry - Slopes already corrected for size (wet weight) & against blanks 
+#*********************************
+
 ## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
 ##   data: a data frame.
 ##   measurevar: the name of a column that contains the variable to be summariezed
@@ -397,10 +359,7 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
   
   return(datac)
 } 
-
-
 ```
-
 
 
 
@@ -639,6 +598,104 @@ TukeyHSD(aov(data = dtotal4, blanksizecorrslope ~ Treatment), conf.level = 0.95)
 
 
 
+## x.x Junk code bits and comments from chapter 6
+```{r}
+
+# how to extract p value ... likely pulling it from the summary that the slope is greater than zero
+# how likely if the krill held their breath for 2 hours....
+# can't use the trial if krill went free diving in the vial
+
+
+# slopes <- coef(info)[2]
+# #print(slopes)
+# dslopes <- data.matrix(slopes)
+# #View(dref)
+# mode(dslopes[,1])
+# dslopes <- as.data.frame(dslopes)
+# dslopes$slope <- dslopes$delta_t
+# dslopes$delta_t <- NULL
+# #View(dslopes)
+
+#now for R^2!!
+
+# Rsq <- sapply(dSlopes,function(x) summary(x)[[r.squared]])
+# t(Rsq) #transposes rows and columns
+# Rsq <- data.matrix(Rsq)
+# #View(Rsq)
+# KrillSlopes <- cbind(dSlopes, Rsq)
+# View(KrilSlopes)
+
+```
+
+
+
+## X.X junk code from chapter 7
+```{r junk code from chapter 7 corrected slopes}
+
+# #2014 Paul comments/Direction 
+# print(blankmeanslope)
+# is.numeric(blankmeanslope)
+# #now we have a mean of the blanks in each separate trial!
+# #View(blankmeanslope)
+# as.data.frame(blankmeanslope)
+# #add a row that is the trial ID
+# blankmeanslope <- cbind(blankmeanslope, levels(dtotal$TrialID))
+# #View(blankmeanslope) #good so far!! 20 july
+# blankmeanslope[,1] <- as.numeric(blankmeanslope[,1]) #make sure it stays numeric
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+#  # # T/S this section ... I don't think we need this anymore
+
+# # alread have trial ID 
+# #rename column 2 as TrialID so it matches up with the column in dtotal2
+# colnames(blankmeanslope)[2] <- "TrialID"
+# #View(blankmeanslope)
+# dtotalslope <- merge(dtotal2, blankmeanslope, by="TrialID")
+# #View(dtotal3) #all still good 20 july
+# dtotal3$blankmeanslope <- as.numeric(as.character(dtotal3$blankmeanslope))
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+#  # # T/S this section ... I don't think we need this anymore
+# # still working off dtotal 3
+# dtotal3$slope <- as.numeric(dtotal3$slope)
+# 
+# #20 july: the blanks themselves are an issue because they're getting the average of themselves and the other blanks taken away from them. what do? 
+# dtotal3$blankcorrslope <- (dtotal3$slope - dtotal3$blankmeanslope)
+# #View(dtotal3)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+####blank and size corrected slope
+
+
+# dSlopes$CorrSlope <- ((subset(dSlopes$slope, dSlopes$TrialID == "Trial01"& dSlopes$MOATS != "blank"))/blankmeanslope1) |
+# ((subset(dSlopes$slope, dSlopes$TrialID == "Trial02" & dSlopes$MOATS != "blank"))/blankmeanslope2) |
+# ((subset(dSlopes$slope, dSlopes$TrialID == "Trial03" & dSlopes$MOATS != "blank"))/blankmeanslope3) | 
+# ((subset(dSlopes$slope, dSlopes$TrialID == "Trial04" & dSlopes$MOATS != "blank"))/blankmeanslope4) 
+
+# Trial01corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial01"& dSlopes$MOATS != "blank")/blankmeanslope1 
+# Trial02corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial02"& dSlopes$MOATS != "blank")/blankmeanslope2 
+# Trial03corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial02"& dSlopes$MOATS != "blank")/blankmeanslope3
+# Trial04corslope <- subset(dSlopes$slope, dSlopes$TrialID == "Trial02"& dSlopes$MOATS != "blank")/blankmeanslope4
+#dSlopes$CorrSlope <- trial01corslope case_when(dSlopes$TrialID == "Trial01"& dSlopes$MOATS != "blank")
+
+
+
+dtotal3$blanksizecorrslope <- dtotal3$blankcorrslope/dtotal3$Size
+#View(dtotal3)
+mode(dtotal3$blanksizecorrslope)
+#y <- subset(dtotal3, dtotal3$blanksizecorrslope != "lnf")
+#View(y)#dealing with the blank vials' size being zero
+#View(dtotal3)
+View(dtotal3)
+
+
+
+```
 
 
 
