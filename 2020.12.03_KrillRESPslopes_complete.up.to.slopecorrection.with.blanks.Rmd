@@ -556,7 +556,6 @@ dSlopes <- dSlopes %>% mutate(CorrSlope=case_when(
 ))
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # Correcting for the size of the animal 
-dSlopes$SizedSlope <- ""
 dSlopes$WetWeight <- as.numeric(dSlopes$WetWeight)
 dSlopes$WetWeightSlope <- dSlopes$CorrSlope/dSlopes$WetWeight
 
@@ -566,6 +565,67 @@ dSlopes$WetWeightSlope <- dSlopes$CorrSlope/dSlopes$WetWeight
 
 ```
 
+
+
+# 13.x Messing with period of observation delta_t aggregated
+```{r 13.x Messing with period of observation delta_t aggregated}
+
+Sumdelta_t <- aggregate(dRESPmsr$delta_t, by=list(Category=dRESPmsr$KrillID), FUN=(sum))
+Sumdelta_t$KrillID <- Sumdelta_t$Category
+Sumdelta_t$x <- as.numeric(Sumdelta_t$x)
+
+Sumdelta_t$Interval.mins <- (Sumdelta_t$x/60)
+
+dSlopes <- merge(dSlopes, Sumdelta_t , by="KrillID")
+
+
+dRESPmsr <- dRESPmsr %>% group_by(Time)
+# Subset by KrillID
+# Run head() & tail() on each subset
+
+smallFrame <- dtotal %>%
+    group_by(KrillID) %>%
+    dplyr::mutate(
+        first = dplyr::first(Time),
+        last = dplyr::last(Time)
+    )
+
+SRTSTPslope <- dtotal %>%
+group_by(KrillID) %>%
+slice(c(1, n())) %>%
+ungroup()
+
+
+
+
+```
+
+
+
+# 14.) Plots I guess
+```{r 14.0) plots I guess  Trial 1}
+
+dTOTslopePLOTs <- merge(dtotal, dSlopes, by="KrillID")
+
+
+Trial1correctedslopes <- filter(dTOTslopePLOTs, TrialID == "Trial01")
+
+ggplot(Trial1correctedslopes, aes(x=Time, y=CorrSlope)) + 
+  geom_point(aes(colour= MOATS.x, point=)) + 
+  ggtitle("All MOATs, All Treatments Corrected Slopes") 
+
+
+ggplot(Trial1correctedslopes, aes(x =Time, y = CorrSlope, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 corrected slopes") +
+  facet_wrap(~ Treatment.y) +
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+```
 
 
 
