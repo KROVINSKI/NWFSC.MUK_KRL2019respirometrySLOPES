@@ -47,6 +47,7 @@ library(wql)
 library(lubridate)
 library(arsenal)
 library(compareDF)
+library(FishResp)
 #for graphing
 library(ggplot2)
 library(stringr)
