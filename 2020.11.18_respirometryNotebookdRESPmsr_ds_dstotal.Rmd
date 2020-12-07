@@ -521,6 +521,16 @@ MissingINFOobservations <- (dtotal[!dtotal$KrillID %in% names(info), ])
 dtotalVSmissinfo <- summary(comparedf(dtotal, MissingINFOobservations))
 
 kable(MissingINFOobservations)
+
+
+SRTSTPslope <- dtotal %>%
+group_by(KrillID) %>%
+slice(c(1, n())) %>%
+ungroup()
+
+
+
+
 ```
 
 
