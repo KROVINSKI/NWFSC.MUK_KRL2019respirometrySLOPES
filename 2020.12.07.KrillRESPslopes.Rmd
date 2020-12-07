@@ -11,7 +11,8 @@ output:
     theme: journal
     highlight: zenburn
     smart: false
-
+editor_options: 
+  chunk_output_type: inline
 ---
 
 
@@ -414,9 +415,10 @@ ggplot(Trial4percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
 ## 8.) Analysis, Respirometry - Creating the Slope Function  
 #*********************************  
 
-vialVol <- 28.06 #ml
+vialVol <- 0.2806 #liters (rather than 28.06mL)
 
 oxygen <- vialVol * dRESPmsr$actualDOmg   
+##mg per liter is the units for Oxygen
 
 dRESPmsr$oxygen <- oxygen
 

@@ -126,10 +126,11 @@ UniqueSensorNames
 ## 3.) Analysis, Respirometry - Creating the Slope Function  
 #*********************************  
 
-vialVol <- 28.06 #ml
+vialVol <- .02806 #unit in Liters
 
 oxygen <- vialVol * dRESPmsr$actualDOmg   
 
+## total mg of oxygen per liter
 dRESPmsr$oxygen <- oxygen
 
 
