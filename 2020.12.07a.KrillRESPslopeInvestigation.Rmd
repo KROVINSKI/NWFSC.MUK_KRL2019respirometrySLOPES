@@ -454,8 +454,6 @@ ds$TrialID<- row.names(ds)
 
 # 9.) Merging ds and dRESPmsr 
 ```{r 9.) Merging ds and dRESPmsr}
-#add column to dslopes thats KrillID
-#View(dref)
 ds$KrillID <- row.names(ds)
 #View(dslopes)
 dtotal <- merge(dRESPmsr, ds, by = "KrillID")

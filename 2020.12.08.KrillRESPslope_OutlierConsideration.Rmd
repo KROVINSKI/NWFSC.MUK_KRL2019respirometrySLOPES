@@ -931,11 +931,23 @@ df[dmod$.cooksd <= 4/n,]
 
 
 
+
+
+## 13.a Determining True Start Time
+
+```{r }
+
+
+
+
+```
+
+
+
 ## 1x. this is broken plot Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)
 ```{r Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)}
 
-
-# Trying to Select by Time
+trial1KRILL <- filter(krillslopes, TrialID.x == "Trial01")
 
 trial1KRILL.time <- trial1KRILL %>% filter(Time>=as.POSIXct("2019-10-28 15:00:01", tz="UTC") & Time<=as.POSIXct("2019-10-28 16:30:01", tz="UTC")) %>%
   filter(Treatment %in% c("CUR", "CHG", "TMP", "n/a"))
@@ -953,44 +965,9 @@ ggplot(trial1KRILL.time, aes(x = Time, y = oxygen, colour = KrillID)) +
 ```
 
 
-
-## 13.a Determining True Start Time
-
-```{r }
-
-trial1KRILL <- filter(krillslopes, TrialID.x == "Trial01")
-
-ggplot(trial1KRILL, aes(x = Time, y = oxygen, colour = KrillID)) +
-  geom_point(size = 1) +
-  geom_smooth(method = "lm") +
-  #scale_y_continuous(breaks=seq(250,950,by=50))   +
-  ggtitle("Trial01 Oxygen mg/L Accross all Treatments") +
-  facet_wrap(~ Treatment) + 
-   # geom_hline(yintercept = c(.8), colour = "red") +
-  theme_bw()
-
-
-
-```
-
-
-
-
-
-
-
 ```{r}
 # linear regression plot of the oxygen over time
 # the residuals from the regression line
-
-ggplot(trial1KRILL.time, aes(x = Time, y = oxygen, colour = KrillID)) +
-  geom_point(size = 1) +
-  geom_smooth(method = "lm") +
-  #scale_y_continuous(breaks=seq(250,950,by=50))   +
-  ggtitle("Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)") +
-  facet_wrap(~ Treatment) +
-   # geom_hline(yintercept = c(.8), colour = "red") +
-  theme_bw()
 
 # creating my own linear model
 Trial1Model <- lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t)
