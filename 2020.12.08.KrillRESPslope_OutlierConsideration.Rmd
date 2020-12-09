@@ -324,38 +324,38 @@ dRESPmsr <- dRESPmsr %>% mutate(RESPRound=case_when(
 # ---TRIAL TWO, ROUND---THREE--- #
 ## Second Trial,   Round 3 on 2019-10-28 began 19:20:01
 ## Second Trial,   Round 3 on 2019-10-28 ended 19:35:00
-  ((Time >= as.POSIXct("2019-10-28 14:59:00", tz = "UTC")) 
-   & (Time < as.POSIXct("2019-10-28 15:14:00", tz = "UTC"))) ~ "T2Round3",   
+  ((Time >= as.POSIXct("2019-10-28 19:20:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 19:35:00", tz = "UTC"))) ~ "T2Round3",   
 
 # ---TRIAL TWO, ROUND---FOUR--- #
 ## Second Trial,   Round 4 on 2019-10-28 began 19:35:01
 ## Second Trial,   Round 4 on 2019-10-28 ended 19:50:00
-  ((Time >= as.POSIXct("2019-10-28 15:14:01", tz = "UTC")) 
-   & (Time < as.POSIXct("2019-10-28 15:29:00", tz = "UTC"))) ~ "T2Round4",  
+  ((Time >= as.POSIXct("2019-10-28 19:35:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 19:50:00", tz = "UTC"))) ~ "T2Round4",  
  
 # ---TRIAL TWO, ROUND---FIVE--- #
 ## Second Trial,   Round 5 on 2019-10-28 began 19:50:01
 ## Second Trial,   Round 5 on 2019-10-28 ended 20:05:00
-  ((Time >= as.POSIXct("2019-10-28 15:29:01", tz = "UTC")) 
-   & (Time < as.POSIXct("2019-10-28 15:44:00", tz = "UTC"))) ~ "T2Round5",  
+  ((Time >= as.POSIXct("2019-10-28 19:50:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 20:05:00", tz = "UTC"))) ~ "T2Round5",  
 
 # ---TRIAL TWO, ROUND---SIX--- #
 ## Second Trial,   Round 6 on 2019-10-28 began 20:05:01
 ## Second Trial,   Round 6 on 2019-10-28 ended 20:20:00
-  ((Time >= as.POSIXct("2019-10-28 15:44:01", tz = "UTC")) 
-   & (Time < as.POSIXct("2019-10-28 15:59:00", tz = "UTC"))) ~ "T2Round6", 
+  ((Time >= as.POSIXct("2019-10-28 20:45:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 20:20:00", tz = "UTC"))) ~ "T2Round6", 
  
 # ---TRIAL TWO, ROUND---SEVEN--- #
 ## Second Trial,   Round 7 on 2019-10-28 began 20:20:01
 ## Second Trial,   Round 7 on 2019-10-28 ended 20:35:00
-  ((Time >= as.POSIXct("2019-10-28 15:59:01", tz = "UTC")) 
-   & (Time < as.POSIXct("2019-10-28 16:14:00", tz = "UTC"))) ~ "T2Round7", 
+  ((Time >= as.POSIXct("2019-10-28 20:20:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 20:35:00", tz = "UTC"))) ~ "T2Round7", 
  
 # ---TRIAL TWO, ROUND---EIGHT--- #
 ## Second Trial,   Round 8 on 2019-10-28 began 20:35:01
-## Second Trial,   Round 8 on 2019-10-28 ended 23:50:59
-  ((Time >= as.POSIXct("2019-10-28 16:14:01", tz = "UTC")) 
-   & (Time < as.POSIXct("2019-10-28 16:29:59", tz = "UTC"))) ~ "T2Round8",
+## Second Trial,   Round 8 on 2019-10-28 ended 20:50:59
+  ((Time >= as.POSIXct("2019-10-28 20:35:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 20:50:59", tz = "UTC"))) ~ "T2Round8",
 
 
 ###
@@ -364,8 +364,8 @@ dRESPmsr <- dRESPmsr %>% mutate(RESPRound=case_when(
 # ---TRIAL THREE, ROUND---ONE--- #  
 ## Second Trial,   Round 1 on 2019-10-29 began 14:00:01
 ## Second Trial,   Round 1 on 2019-10-29 ended 14:10:00
-  ((Time >= as.POSIXct("2019-10-29 18:50:00", tz = "UTC")) 
-   & (Time < as.POSIXct("2019-10-29 19:05:00", tz = "UTC"))) ~ "T3Round1",  
+  ((Time >= as.POSIXct("2019-10-29 14:00:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 14:10:00", tz = "UTC"))) ~ "T3Round1",  
 
 # ---TRIAL THREE, ROUND---TWO--- #
 ## Second Trial,   Round 2 on 2019-10-29 began 14:10:01
@@ -401,13 +401,13 @@ dRESPmsr <- dRESPmsr %>% mutate(RESPRound=case_when(
 ## Second Trial,   Round 7 on 2019-10-29 began 15:25:01
 ## Second Trial,   Round 7 on 2019-10-29 ended 15:40:00
   ((Time >= as.POSIXct("2019-10-29 15:25:01", tz = "UTC")) 
-   & (Time < as.POSIXct("2019-10-29 14:40:00", tz = "UTC"))) ~ "T3Round7", 
+   & (Time < as.POSIXct("2019-10-29 15:40:00", tz = "UTC"))) ~ "T3Round7", 
  
 # ---TRIAL THREE, ROUND---EIGHT--- #
 ## Second Trial,   Round 8 on 2019-10-29 began 15:40:01
 ## Second Trial,   Round 8 on 2019-10-29 ended 15:55:59
-  ((Time >= as.POSIXct("2019-10-29 16:14:01", tz = "UTC")) 
-   & (Time < as.POSIXct("2019-10-29 16:29:59", tz = "UTC"))) ~ "T3Round8",
+  ((Time >= as.POSIXct("2019-10-29 15:40:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 15:55:59", tz = "UTC"))) ~ "T3Round8",
 
 
 ###
