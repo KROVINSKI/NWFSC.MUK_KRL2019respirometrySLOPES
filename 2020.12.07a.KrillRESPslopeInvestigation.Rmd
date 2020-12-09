@@ -43,14 +43,16 @@ library(tidyverse)
 library(plyr)
 library(nlme)
 library(tidyr)
+library(dbplyr)
 library(purrr)
 library(wql)
 library(lubridate)
+library(tibbletime)
 library(arsenal)
 library(compareDF)
-library(FishResp)
 #for graphing
 library(ggplot2)
+library(ggfortify)
 library(stringr)
 library(nlme)
 library(RColorBrewer)
@@ -325,16 +327,6 @@ ggplot(dRESPmsr, aes(x = Time, y = actualDOmg, colour = SensorName)) +
 
 Trial1percentDO <- filter(dRESPmsr, TrialID == "Trial01")
 
-# select a delayed start time
-# find a way to move around the oxygen over delta_t relationship
-# explore residuals from the slope line 
-# the slope is per .00min per mg per liter
-
-
-# create a vector of the residual from the Sapply slope function
-
-
-
 levels(Trial1percentDO$Treatment)
 
 ggplot(Trial1percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
@@ -424,10 +416,10 @@ ggplot(Trial4percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
 ## 8.) Analysis, Respirometry - Creating the Slope Function  
 #*********************************  
 
-vialVol <- 0.2806 #liters (rather than 28.06mL)
+vialVol <- 0.02806 #liters (rather than 28.06mL)
 
 oxygen <- vialVol * dRESPmsr$actualDOmg   
-##mg per liter is the units for Oxygen
+##mg per liter is the units for Oxygen per vial
 
 dRESPmsr$oxygen <- oxygen
 
@@ -528,6 +520,239 @@ dSlopes$WetWeight<- dRESPanimal$Size
 ```
 
 
+# 13.) Investigating slope, R squares and outliers
+
+Determinining in-house thresholds for outlierness
+X axis is the number of times I "sampled" with the presense
+
+
+outlier analysis rules..
+# justification checks - outlier
+# two mechanisms for cause of highter residuals- bubbles on the sensor- if there's a brief spirt of activity with a CO2 bubble
+#panic between bubbles- why is it higher?
+#what happens if the krill poop....
+#explaining these air (supposed) bubbles
+
+
+
+# create a loop to go through trials and generate a list of all the model outputs
+# take df and break down by trials (break dtotal into 4 datasets)
+# break down for each vial 
+# apply the foritfy model to a trial
+# set a filtering threshold on the resulting fortify model based on cooks standard distance
+
+
+# creating a loop for with and without outliers
+
+df is original dataframe
+looking to make a selection if anything is less than this cooks threshold
+
+
+df[dmod$.cooksd <= 4/n,]
+
+## 13.a Determining True Start Time
+
+```{r }
+
+trial1KRILL <- filter(krillslopes, TrialID.x == "Trial01")
+
+ggplot(trial1KRILL, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Oxygen mg/L Accross all Treatments") +
+  facet_wrap(~ Treatment) + 
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+
+```
+
+## 1x. this is broken plot Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)
+```{r Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)}
+
+
+# Trying to Select by Time
+
+trial1KRILL.time <- trial1KRILL %>% filter(Time>=as.POSIXct("2019-10-28 15:00:01", tz="UTC") & Time<=as.POSIXct("2019-10-28 16:30:01", tz="UTC")) %>%
+  filter(Treatment %in% c("CUR", "CHG", "TMP", "n/a"))
+
+ggplot(trial1KRILL.time, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)") +
+  facet_wrap(~ Treatment) +
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+# linear regression plot of the oxygen over time
+# the residuals from the regression line
+
+ggplot(trial1KRILL.time, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)") +
+  facet_wrap(~ Treatment) +
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+# creating my own linear model
+Trial1Model <- lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t)
+
+fitTrial1Mod <- lm(oxygen ~ delta_t, data = trial1KRILL)
+
+autoplot(fitTrial1Mod )
+
+# ggplot(df, aes(x = .fitted, y = .resid)) + geom_point()
+
+```
+
+```{r}
+
+
+modTrial1 <- lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t)
+modTrial1 <- fortify(modTrial1)
+
+
+
+dfTrial01_KrilLR11 <- trial1KRILL[trial1KRILL$KrillID == "Trial01_KrilLR11",]
+length(dfTrial01_KrilLR11$delta_t)
+# 47
+mod.df.KrillR11 <- lm(dfTrial01_KrilLR11$oxygen ~ dfTrial01_KrilLR11$delta_t)
+mod.df.KrillR11 <- fortify(mod.df.KrillR11)
+
+
+#KrillR11noOUT <- mod.df.KrillR11[mod.df.KrillR11$.cooksd <= 4/(length(dfTrial01_KrilLR11$KrillID)), ]
+
+KrillR11noOUT <- dfTrial01_KrilLR11[mod.df.KrillR11$.cooksd <= 4/(length(dfTrial01_KrilLR11$KrillID)), ]
+# any set of true false value can be passed to another dataframe so long as it's the same length
+# using one dataframe to filter another 
+mod.df.KrillR11$.cooksd <= 4/(length(dfTrial01_KrilLR11$KrillID))
+
+#create a plot for Krillr11 without outliers to see it's r squr 
+# create a plot for Krillr11 with
+
+# 
+# ggplot(modTrial1, aes(x = trial1KRILL$delta_t, y = trial1KRILL$oxygen)) + geom_point()
+# 
+# ggplot(modTrial1, aes(x = .fitted, y = .resid)) + geom_point(size =1)
+
+```
+
+
+# 2x. Comparing the scatterplots of KrillR11 with and without outliers
+```{r}
+
+# Comparing 
+# KrillR11noOUT
+# dfTrial01_KrilLR11
+
+
+allpts <- ggplot() + geom_point(data = dfTrial01_KrilLR11, aes(x = dfTrial01_KrilLR11$delta_t, y = dfTrial01_KrilLR11$oxygen, color = "red" ),size=1)
+allpts
+
+
+# allpts <- ggplot(dfTrial01_KrilLR11, aes(x=dfTrial01_KrilLR11$delta_t, y=dfTrial01_KrilLR11$oxygen)) + geom_point()
+
+```
+
+
+# 2x. Comparing the scatterplots of KrillR11 with and without outliers
+```{r}
+
+# Comparing 
+# KrillR11noOUT
+# dfTrial01_KrilLR11
+
+
+# outliersshown <- allpts + ggplot(KrillR11noOUT, aes(x=KrillR11noOUT$delta_t, y=KrillR11noOUT$oxygen)) + geom_point()
+# 
+# outliersshown 
+
+
+par(mfrow = c(1,2))
+plot(KrillR11noOUT$delta_t, KrillR11noOUT$oxygen)
+plot(dfTrial01_KrilLR11$delta_t, dfTrial01_KrilLR11$oxygen)
+
+
+```
+
+
+
+
+```{r}
+
+modTrial1 <- lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t)
+modTrial1 <- fortify(modTrial1)
+
+ggplot(modTrial1, aes(x = .fitted, y = .resid)) + geom_point(size =1)
+
+ggplot(trial1KRILL, aes(x= delta_t, y =oxygen )) + geom_point(size =1)
+
+## definition for outliers in a linear regression- our loose definition
+## residuals higher than .03 across trials? 
+
+```
+
+
+
+
+```{r}
+
+trial1KRILL$lmresult <- (lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t))
+
+
+ggplot(modTrial1, aes(x = .fitted, y = .resid)) + geom_point(size =1)
+
+ggplot(trial1KRILL, aes(x= delta_t, y =oxygen )) + geom_point(size =1)
+
+## definition for outliers in a linear regression- our loose definition
+## residuals higher than .03 across trials? 
+
+
+
+```
+
+
+
+
+
+
+```{r}
+# select a delayed start time
+# find a way to move around the oxygen over delta_t relationship
+# explore residuals from the slope line 
+# the slope is per .00min per mg per liter
+
+
+# create a vector of the residual from the Sapply slope function
+
+
+```
+
+
+
+
+
+
+
 # 12.) Analysis, Respirometry - Correcting the Slope for Blanks
 ```{r 12.) Analysis, Respirometry - Correcting the Slope for Blanks}
 
@@ -570,10 +795,10 @@ dSlopes$slope <- as.numeric(dSlopes$slope)
 
 dSlopes <- dSlopes %>% mutate(CorrSlope=case_when(
     (dSlopes$MOATS == "blank" ~ dSlopes$slope),
-    (dSlopes$TrialID == "Trial01" ~ dSlopes$slope-blankmeanslope1),
-    (dSlopes$TrialID == "Trial02" ~ dSlopes$slope-blankmeanslope2),
-    (dSlopes$TrialID == "Trial03" ~ dSlopes$slope-blankmeanslope3),
-    (dSlopes$TrialID == "Trial04" ~ dSlopes$slope-blankmeanslope4),
+    (dSlopes$TrialID == "Trial01" ~ dSlopes$slope-(abs(blankmeanslope1))),
+    (dSlopes$TrialID == "Trial02" ~ dSlopes$slope-(abs(blankmeanslope2))),
+    (dSlopes$TrialID == "Trial03" ~ dSlopes$slope-(abs(blankmeanslope3))),
+    (dSlopes$TrialID == "Trial04" ~ dSlopes$slope-(abs(blankmeanslope4))),
     TRUE ~ as.numeric(0)
 ))
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
@@ -584,10 +809,74 @@ dSlopes$WetWeightSlope <- dSlopes$CorrSlope/dSlopes$WetWeight
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
-#create plots and prehaps convert to larger units
+#create plots and perhaps convert to larger units
+
+``` 
+
+
+
+
+# 13.) Plots of Slopes- Investigating the time series for each trial
+## 13.a Determining True Start Time
+
+```{r }
+
+krillslopesINVESTG <- merge(dSlopes, krillslopes , by="KrillID")
+trial1KRILL <- filter(krillslopesINVESTG, TrialID == "Trial01")
+
+
+# krillslopes$slope <- krillslopes$slope.x
+# krillslopes$rsq <- krillslopes$rsq.x
+# krillslopes$oxygenmgL <- krillslopes$oxygen 
+# krillslopes$treatment <- krillslopes$Treatment.x
+
+
+ggplot(trial1KRILL, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Oxygen mg/L Accross all Treatments") +
+  facet_wrap(~ Treatment.x) + 
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
 
 ```
 
+
+```{r}
+
+dim(krillslopesINVESTG)
+
+trial1KRILL.time <- filter(trial1KRILL, Time < "2019-10-28 15:30:00")
+
+ggplot(filter(trial1KRILL, Time < "2019-10-28 15:30:00"), aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Oxygen mg/L Accross all Treatments 10 Minute Delay Start Time") +
+  facet_wrap(~ Treatment.x) + 
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+
+```
+
+
+
+```{r}
+# select a delayed start time
+# find a way to move around the oxygen over delta_t relationship
+# explore residuals from the slope line 
+# the slope is per .00min per mg per liter
+
+
+# create a vector of the residual from the Sapply slope function
+
+
+```
 
 
 # 13.x Messing with period of observation delta_t aggregated

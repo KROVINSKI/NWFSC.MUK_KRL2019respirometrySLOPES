@@ -43,14 +43,16 @@ library(tidyverse)
 library(plyr)
 library(nlme)
 library(tidyr)
+library(dbplyr)
 library(purrr)
 library(wql)
 library(lubridate)
+library(tibbletime)
 library(arsenal)
 library(compareDF)
-library(FishResp)
 #for graphing
 library(ggplot2)
+library(ggfortify)
 library(stringr)
 library(nlme)
 library(RColorBrewer)
@@ -240,7 +242,258 @@ dRESPmsr$KrillID <- paste(dRESPmsr$TrialID, "_", dRESPmsr$SensorName, sep="")
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
+
 ```
+
+## 5.a Creating Round Variable
+```{r 5.a Creating Round Variable}
+
+#*********************************
+## 5.) Creating the Round Variable to best identify the acclimination period
+#*********************************
+# The acclimination period was detailed as the first 10minutes 
+# Eight Rounds of Respirometry were conducted 
+# Creating the rounds of respirometry to later advise outlier elimination, 
+#                                             data filtering consideration
+# 
+dRESPmsr$RESPRound <- ""
+dRESPmsr <- dRESPmsr %>% mutate(RESPRound=case_when(
+
+# ---TRIAL ONE, ROUND---ONE--- #  
+## First Trial,   Round 1 on 2019-10-28 began 14:25:01
+## First Trial,   Round 1 on 2019-10-28 ended 14:44:00
+  ((Time >= as.POSIXct("2019-10-28 14:25:00", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 14:44:00", tz = "UTC"))) ~ "T1Round1",  
+
+# ---TRIAL ONE, ROUND---TWO--- #
+## First Trial,   Round 2 on 2019-10-28 began 14:44:01
+## First Trial,   Round 2 on 2019-10-28 ended 14:58:59
+  ((Time >= as.POSIXct("2019-10-28 14:44:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 14:58:59", tz = "UTC"))) ~ "T1Round2",  
+
+# ---TRIAL ONE, ROUND---THREE--- #
+## First Trial,   Round 3 on 2019-10-28 began 14:59:00
+## First Trial,   Round 3 on 2019-10-28 ended 15:14:00
+  ((Time >= as.POSIXct("2019-10-28 14:59:00", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 15:14:00", tz = "UTC"))) ~ "T1Round3",   
+
+# ---TRIAL ONE, ROUND---FOUR--- #
+## First Trial,   Round 4 on 2019-10-28 began 15:14:01
+## First Trial,   Round 4 on 2019-10-28 ended 15:29:00
+  ((Time >= as.POSIXct("2019-10-28 15:14:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 15:29:00", tz = "UTC"))) ~ "T1Round4",  
+ 
+# ---TRIAL ONE, ROUND---FIVE--- #
+## First Trial,   Round 5 on 2019-10-28 began 15:29:01
+## First Trial,   Round 5 on 2019-10-28 ended 15:44:00
+  ((Time >= as.POSIXct("2019-10-28 15:29:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 15:44:00", tz = "UTC"))) ~ "T1Round5",  
+
+# ---TRIAL ONE, ROUND---SIX--- #
+## First Trial,   Round 6 on 2019-10-28 began 15:44:01
+## First Trial,   Round 6 on 2019-10-28 ended 15:59:00
+  ((Time >= as.POSIXct("2019-10-28 15:44:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 15:59:00", tz = "UTC"))) ~ "T1Round6", 
+ 
+# ---TRIAL ONE, ROUND---SEVEN--- #
+## First Trial,   Round 7 on 2019-10-28 began 15:59:01
+## First Trial,   Round 7 on 2019-10-28 ended 16:14:00
+  ((Time >= as.POSIXct("2019-10-28 15:59:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 16:14:00", tz = "UTC"))) ~ "T1Round7", 
+ 
+# ---TRIAL ONE, ROUND---EIGHT--- #
+## First Trial,   Round 8 on 2019-10-28 began 16:14:01
+## First Trial,   Round 8 on 2019-10-28 ended 16:29:59
+  ((Time >= as.POSIXct("2019-10-28 16:14:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 16:29:59", tz = "UTC"))) ~ "T1Round8",
+
+####
+
+# ---TRIAL TWO, ROUND---ONE--- #  
+## Second Trial,   Round 1 on 2019-10-28 began 18:50:01
+## Second Trial,   Round 1 on 2019-10-28 ended 19:05:00
+  ((Time >= as.POSIXct("2019-10-28 18:50:00", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 19:05:00", tz = "UTC"))) ~ "T2Round1",  
+
+# ---TRIAL TWO, ROUND---TWO--- #
+## Second Trial,   Round 2 on 2019-10-28 began 19:05:01
+## Second Trial,   Round 2 on 2019-10-28 ended 19:20:00
+  ((Time >= as.POSIXct("2019-10-28 19:05:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 19:20:00", tz = "UTC"))) ~ "T2Round2",  
+
+# ---TRIAL TWO, ROUND---THREE--- #
+## Second Trial,   Round 3 on 2019-10-28 began 19:20:01
+## Second Trial,   Round 3 on 2019-10-28 ended 19:35:00
+  ((Time >= as.POSIXct("2019-10-28 14:59:00", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 15:14:00", tz = "UTC"))) ~ "T2Round3",   
+
+# ---TRIAL TWO, ROUND---FOUR--- #
+## Second Trial,   Round 4 on 2019-10-28 began 19:35:01
+## Second Trial,   Round 4 on 2019-10-28 ended 19:50:00
+  ((Time >= as.POSIXct("2019-10-28 15:14:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 15:29:00", tz = "UTC"))) ~ "T2Round4",  
+ 
+# ---TRIAL TWO, ROUND---FIVE--- #
+## Second Trial,   Round 5 on 2019-10-28 began 19:50:01
+## Second Trial,   Round 5 on 2019-10-28 ended 20:05:00
+  ((Time >= as.POSIXct("2019-10-28 15:29:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 15:44:00", tz = "UTC"))) ~ "T2Round5",  
+
+# ---TRIAL TWO, ROUND---SIX--- #
+## Second Trial,   Round 6 on 2019-10-28 began 20:05:01
+## Second Trial,   Round 6 on 2019-10-28 ended 20:20:00
+  ((Time >= as.POSIXct("2019-10-28 15:44:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 15:59:00", tz = "UTC"))) ~ "T2Round6", 
+ 
+# ---TRIAL TWO, ROUND---SEVEN--- #
+## Second Trial,   Round 7 on 2019-10-28 began 20:20:01
+## Second Trial,   Round 7 on 2019-10-28 ended 20:35:00
+  ((Time >= as.POSIXct("2019-10-28 15:59:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 16:14:00", tz = "UTC"))) ~ "T2Round7", 
+ 
+# ---TRIAL TWO, ROUND---EIGHT--- #
+## Second Trial,   Round 8 on 2019-10-28 began 20:35:01
+## Second Trial,   Round 8 on 2019-10-28 ended 23:50:59
+  ((Time >= as.POSIXct("2019-10-28 16:14:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 16:29:59", tz = "UTC"))) ~ "T2Round8",
+
+
+###
+
+
+# ---TRIAL THREE, ROUND---ONE--- #  
+## Second Trial,   Round 1 on 2019-10-29 began 14:00:01
+## Second Trial,   Round 1 on 2019-10-29 ended 14:10:00
+  ((Time >= as.POSIXct("2019-10-29 18:50:00", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 19:05:00", tz = "UTC"))) ~ "T3Round1",  
+
+# ---TRIAL THREE, ROUND---TWO--- #
+## Second Trial,   Round 2 on 2019-10-29 began 14:10:01
+## Second Trial,   Round 2 on 2019-10-29 ended 14:25:00
+  ((Time >= as.POSIXct("2019-10-29 14:10:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 14:25:00", tz = "UTC"))) ~ "T3Round2",  
+
+# ---TRIAL THREE, ROUND---THREE--- #
+## Second Trial,   Round 3 on 2019-10-29 began 14:25:01
+## Second Trial,   Round 3 on 2019-10-29 ended 14:40:00
+  ((Time >= as.POSIXct("2019-10-29 14:25:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 14:40:00", tz = "UTC"))) ~ "T3Round3",   
+
+# ---TRIAL THREE, ROUND---FOUR--- #
+## Second Trial,   Round 4 on 2019-10-29 began 14:40:01
+## Second Trial,   Round 4 on 2019-10-29 ended 14:55:00
+  ((Time >= as.POSIXct("2019-10-29 14:40:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 14:55:00", tz = "UTC"))) ~ "T3Round4",  
+ 
+# ---TRIAL THREE, ROUND---FIVE--- #
+## Second Trial,   Round 5 on 2019-10-29 began 14:55:01
+## Second Trial,   Round 5 on 2019-10-29 ended 15:10:00
+  ((Time >= as.POSIXct("2019-10-29 14:55:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 15:10:00", tz = "UTC"))) ~ "T3Round5",  
+
+# ---TRIAL THREE, ROUND---SIX--- #
+## Second Trial,   Round 6 on 2019-10-29 began 15:10:01
+## Second Trial,   Round 6 on 2019-10-29 ended 15:25:00
+  ((Time >= as.POSIXct("2019-10-29 15:10:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 15:25:00", tz = "UTC"))) ~ "T3Round6", 
+ 
+# ---TRIAL THREE, ROUND---SEVEN--- #
+## Second Trial,   Round 7 on 2019-10-29 began 15:25:01
+## Second Trial,   Round 7 on 2019-10-29 ended 15:40:00
+  ((Time >= as.POSIXct("2019-10-29 15:25:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 14:40:00", tz = "UTC"))) ~ "T3Round7", 
+ 
+# ---TRIAL THREE, ROUND---EIGHT--- #
+## Second Trial,   Round 8 on 2019-10-29 began 15:40:01
+## Second Trial,   Round 8 on 2019-10-29 ended 15:55:59
+  ((Time >= as.POSIXct("2019-10-29 16:14:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 16:29:59", tz = "UTC"))) ~ "T3Round8",
+
+
+###
+
+
+# ---TRIAL FOUR, ROUND---ONE--- #  
+## Second Trial,   Round 1 on 2019-10-29 began 17:23:01
+## Second Trial,   Round 1 on 2019-10-29 ended 17:38:00
+  ((Time >= as.POSIXct("2019-10-29 17:23:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 17:38:00", tz = "UTC"))) ~ "T4Round1",  
+
+# ---TRIAL FOUR, ROUND---TWO--- #
+## Second Trial,   Round 2 on 2019-10-29 began 17:38:01
+## Second Trial,   Round 2 on 2019-10-29 ended 17:53:00
+  ((Time >= as.POSIXct("2019-10-29 17:38:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 17:53:00", tz = "UTC"))) ~ "T4Round2",  
+
+# ---TRIAL FOUR, ROUND---THREE--- #
+## Second Trial,   Round 3 on 2019-10-29 began 17:53:01
+## Second Trial,   Round 3 on 2019-10-29 ended 18:08:00
+  ((Time >= as.POSIXct("2019-10-29 17:53:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 18:08:00", tz = "UTC"))) ~ "T4Round3",   
+
+# ---TRIAL FOUR, ROUND---FOUR--- #
+## Second Trial,   Round 4 on 2019-10-29 began 18:08:01
+## Second Trial,   Round 4 on 2019-10-29 ended 18:23:00
+  ((Time >= as.POSIXct("2019-10-29 18:08:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 18:23:00", tz = "UTC"))) ~ "T4Round4",  
+ 
+# ---TRIAL FOUR, ROUND---FIVE--- #
+## Second Trial,   Round 5 on 2019-10-29 began 18:23:01
+## Second Trial,   Round 5 on 2019-10-29 ended 18:38:00
+  ((Time >= as.POSIXct("2019-10-29 18:23:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 18:38:00", tz = "UTC"))) ~ "T4Round5",  
+
+# ---TRIAL FOUR, ROUND---SIX--- #
+## Second Trial,   Round 6 on 2019-10-29 began 18:38:01
+## Second Trial,   Round 6 on 2019-10-29 ended 18:53:00
+  ((Time >= as.POSIXct("2019-10-29 18:38:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 18:53:00", tz = "UTC"))) ~ "T4Round6", 
+ 
+# ---TRIAL FOUR, ROUND---SEVEN--- #
+## Second Trial,   Round 7 on 2019-10-29 began 18:53:01
+## Second Trial,   Round 7 on 2019-10-29 ended 19:08:00
+  ((Time >= as.POSIXct("2019-10-29 18:53:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 19:08:00", tz = "UTC"))) ~ "T4Round7", 
+ 
+# ---TRIAL FOUR, ROUND---EIGHT--- #
+## Second Trial,   Round 8 on 2019-10-29 began 19:08:01
+## Second Trial,   Round 8 on 2019-10-29 ended 19:23:59
+  ((Time >= as.POSIXct("2019-10-29 19:08:01", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-29 19:23:59", tz = "UTC"))) ~ "T4Round8",
+
+  TRUE ~"other"
+)) 
+
+
+```
+
+
+
+## 5.b Grouping by KrillID and then by Time
+```{r}
+#Grouping by KrillID
+dRESPmsr <- dRESPmsr %>% group_by(KrillID)
+#Order Chronologicaly
+dRESPmsr <- dRESPmsr %>% group_by(Time)
+dRESPmsr <- dRESPmsr [order(as.Date(dRESPmsr$Time, format="%d-%B-%y %H:%M:%S", tz="UTC")),]
+#Will print tibble
+dRESPmsr [order(as.Date(dRESPmsr$Time, format="%d-%B-%y %H:%M:%S", tz="UTC")),]
+
+dRESPmsr <- dRESPmsr %>% arrange(dRESPmsr(Time), .by_group = TRUE)
+
+dRESPmsr <- dRESPmsr %>%
+  mutate(date = as.Date(dRESPmsr$Time, "%d-%B-%y %H:%M:%S")) %>%
+  arrange(date)
+
+dRESPmsr %>%
+  mutate(date = as.Date(dRESPmsr$Time, "%d-%B-%y %H:%M:%S")) %>%
+  arrange(date)
+
+#Organize by Round
+
+
+```
+
 
 
 
@@ -324,16 +577,6 @@ ggplot(dRESPmsr, aes(x = Time, y = actualDOmg, colour = SensorName)) +
 ```{r 7.1) PLotting Percent DO filtering Trial 1}
 
 Trial1percentDO <- filter(dRESPmsr, TrialID == "Trial01")
-
-# select a delayed start time
-# find a way to move around the oxygen over delta_t relationship
-# explore residuals from the slope line 
-# the slope is per .00min per mg per liter
-
-
-# create a vector of the residual from the Sapply slope function
-
-
 
 levels(Trial1percentDO$Treatment)
 
@@ -424,10 +667,10 @@ ggplot(Trial4percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
 ## 8.) Analysis, Respirometry - Creating the Slope Function  
 #*********************************  
 
-vialVol <- 0.2806 #liters (rather than 28.06mL)
+vialVol <- 0.02806 #liters (rather than 28.06mL)
 
 oxygen <- vialVol * dRESPmsr$actualDOmg   
-##mg per liter is the units for Oxygen
+##mg per liter is the units for Oxygen per vial
 
 dRESPmsr$oxygen <- oxygen
 
@@ -528,6 +771,239 @@ dSlopes$WetWeight<- dRESPanimal$Size
 ```
 
 
+# 13.) Investigating slope, R squares and outliers
+
+Determinining in-house thresholds for outlierness
+X axis is the number of times I "sampled" with the presense
+
+
+outlier analysis rules..
+# justification checks - outlier
+# two mechanisms for cause of highter residuals- bubbles on the sensor- if there's a brief spirt of activity with a CO2 bubble
+#panic between bubbles- why is it higher?
+#what happens if the krill poop....
+#explaining these air (supposed) bubbles
+
+
+
+# create a loop to go through trials and generate a list of all the model outputs
+# take df and break down by trials (break dtotal into 4 datasets)
+# break down for each vial 
+# apply the foritfy model to a trial
+# set a filtering threshold on the resulting fortify model based on cooks standard distance
+
+
+# creating a loop for with and without outliers
+
+df is original dataframe
+looking to make a selection if anything is less than this cooks threshold
+
+
+df[dmod$.cooksd <= 4/n,]
+
+## 13.a Determining True Start Time
+
+```{r }
+
+trial1KRILL <- filter(krillslopes, TrialID.x == "Trial01")
+
+ggplot(trial1KRILL, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Oxygen mg/L Accross all Treatments") +
+  facet_wrap(~ Treatment) + 
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+
+```
+
+## 1x. this is broken plot Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)
+```{r Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)}
+
+
+# Trying to Select by Time
+
+trial1KRILL.time <- trial1KRILL %>% filter(Time>=as.POSIXct("2019-10-28 15:00:01", tz="UTC") & Time<=as.POSIXct("2019-10-28 16:30:01", tz="UTC")) %>%
+  filter(Treatment %in% c("CUR", "CHG", "TMP", "n/a"))
+
+ggplot(trial1KRILL.time, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)") +
+  facet_wrap(~ Treatment) +
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+# linear regression plot of the oxygen over time
+# the residuals from the regression line
+
+ggplot(trial1KRILL.time, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)") +
+  facet_wrap(~ Treatment) +
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+# creating my own linear model
+Trial1Model <- lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t)
+
+fitTrial1Mod <- lm(oxygen ~ delta_t, data = trial1KRILL)
+
+autoplot(fitTrial1Mod )
+
+# ggplot(df, aes(x = .fitted, y = .resid)) + geom_point()
+
+```
+
+```{r}
+
+
+modTrial1 <- lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t)
+modTrial1 <- fortify(modTrial1)
+
+
+
+dfTrial01_KrilLR11 <- trial1KRILL[trial1KRILL$KrillID == "Trial01_KrilLR11",]
+length(dfTrial01_KrilLR11$delta_t)
+# 47
+mod.df.KrillR11 <- lm(dfTrial01_KrilLR11$oxygen ~ dfTrial01_KrilLR11$delta_t)
+mod.df.KrillR11 <- fortify(mod.df.KrillR11)
+
+
+#KrillR11noOUT <- mod.df.KrillR11[mod.df.KrillR11$.cooksd <= 4/(length(dfTrial01_KrilLR11$KrillID)), ]
+
+KrillR11noOUT <- dfTrial01_KrilLR11[mod.df.KrillR11$.cooksd <= 4/(length(dfTrial01_KrilLR11$KrillID)), ]
+# any set of true false value can be passed to another dataframe so long as it's the same length
+# using one dataframe to filter another 
+mod.df.KrillR11$.cooksd <= 4/(length(dfTrial01_KrilLR11$KrillID))
+
+#create a plot for Krillr11 without outliers to see it's r squr 
+# create a plot for Krillr11 with
+
+# 
+# ggplot(modTrial1, aes(x = trial1KRILL$delta_t, y = trial1KRILL$oxygen)) + geom_point()
+# 
+# ggplot(modTrial1, aes(x = .fitted, y = .resid)) + geom_point(size =1)
+
+```
+
+
+# 2x. Comparing the scatterplots of KrillR11 with and without outliers
+```{r}
+
+# Comparing 
+# KrillR11noOUT
+# dfTrial01_KrilLR11
+
+
+allpts <- ggplot() + geom_point(data = dfTrial01_KrilLR11, aes(x = dfTrial01_KrilLR11$delta_t, y = dfTrial01_KrilLR11$oxygen, color = "red" ),size=1)
+allpts
+
+
+# allpts <- ggplot(dfTrial01_KrilLR11, aes(x=dfTrial01_KrilLR11$delta_t, y=dfTrial01_KrilLR11$oxygen)) + geom_point()
+
+```
+
+
+# 2x. Comparing the scatterplots of KrillR11 with and without outliers
+```{r}
+
+# Comparing 
+# KrillR11noOUT
+# dfTrial01_KrilLR11
+
+
+# outliersshown <- allpts + ggplot(KrillR11noOUT, aes(x=KrillR11noOUT$delta_t, y=KrillR11noOUT$oxygen)) + geom_point()
+# 
+# outliersshown 
+
+
+par(mfrow = c(1,2))
+plot(KrillR11noOUT$delta_t, KrillR11noOUT$oxygen)
+plot(dfTrial01_KrilLR11$delta_t, dfTrial01_KrilLR11$oxygen)
+
+
+```
+
+
+
+
+```{r}
+
+modTrial1 <- lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t)
+modTrial1 <- fortify(modTrial1)
+
+ggplot(modTrial1, aes(x = .fitted, y = .resid)) + geom_point(size =1)
+
+ggplot(trial1KRILL, aes(x= delta_t, y =oxygen )) + geom_point(size =1)
+
+## definition for outliers in a linear regression- our loose definition
+## residuals higher than .03 across trials? 
+
+```
+
+
+
+
+```{r}
+
+trial1KRILL$lmresult <- (lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t))
+
+
+ggplot(modTrial1, aes(x = .fitted, y = .resid)) + geom_point(size =1)
+
+ggplot(trial1KRILL, aes(x= delta_t, y =oxygen )) + geom_point(size =1)
+
+## definition for outliers in a linear regression- our loose definition
+## residuals higher than .03 across trials? 
+
+
+
+```
+
+
+
+
+
+
+```{r}
+# select a delayed start time
+# find a way to move around the oxygen over delta_t relationship
+# explore residuals from the slope line 
+# the slope is per .00min per mg per liter
+
+
+# create a vector of the residual from the Sapply slope function
+
+
+```
+
+
+
+
+
+
+
 # 12.) Analysis, Respirometry - Correcting the Slope for Blanks
 ```{r 12.) Analysis, Respirometry - Correcting the Slope for Blanks}
 
@@ -570,10 +1046,10 @@ dSlopes$slope <- as.numeric(dSlopes$slope)
 
 dSlopes <- dSlopes %>% mutate(CorrSlope=case_when(
     (dSlopes$MOATS == "blank" ~ dSlopes$slope),
-    (dSlopes$TrialID == "Trial01" ~ dSlopes$slope-blankmeanslope1),
-    (dSlopes$TrialID == "Trial02" ~ dSlopes$slope-blankmeanslope2),
-    (dSlopes$TrialID == "Trial03" ~ dSlopes$slope-blankmeanslope3),
-    (dSlopes$TrialID == "Trial04" ~ dSlopes$slope-blankmeanslope4),
+    (dSlopes$TrialID == "Trial01" ~ dSlopes$slope-(abs(blankmeanslope1))),
+    (dSlopes$TrialID == "Trial02" ~ dSlopes$slope-(abs(blankmeanslope2))),
+    (dSlopes$TrialID == "Trial03" ~ dSlopes$slope-(abs(blankmeanslope3))),
+    (dSlopes$TrialID == "Trial04" ~ dSlopes$slope-(abs(blankmeanslope4))),
     TRUE ~ as.numeric(0)
 ))
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
@@ -584,10 +1060,74 @@ dSlopes$WetWeightSlope <- dSlopes$CorrSlope/dSlopes$WetWeight
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
-#create plots and prehaps convert to larger units
+#create plots and perhaps convert to larger units
+
+``` 
+
+
+
+
+# 13.) Plots of Slopes- Investigating the time series for each trial
+## 13.a Determining True Start Time
+
+```{r }
+
+krillslopesINVESTG <- merge(dSlopes, krillslopes , by="KrillID")
+trial1KRILL <- filter(krillslopesINVESTG, TrialID == "Trial01")
+
+
+# krillslopes$slope <- krillslopes$slope.x
+# krillslopes$rsq <- krillslopes$rsq.x
+# krillslopes$oxygenmgL <- krillslopes$oxygen 
+# krillslopes$treatment <- krillslopes$Treatment.x
+
+
+ggplot(trial1KRILL, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Oxygen mg/L Accross all Treatments") +
+  facet_wrap(~ Treatment.x) + 
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
 
 ```
 
+
+```{r}
+
+dim(krillslopesINVESTG)
+
+trial1KRILL.time <- filter(trial1KRILL, Time < "2019-10-28 15:30:00")
+
+ggplot(filter(trial1KRILL, Time < "2019-10-28 15:30:00"), aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Oxygen mg/L Accross all Treatments 10 Minute Delay Start Time") +
+  facet_wrap(~ Treatment.x) + 
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+
+```
+
+
+
+```{r}
+# select a delayed start time
+# find a way to move around the oxygen over delta_t relationship
+# explore residuals from the slope line 
+# the slope is per .00min per mg per liter
+
+
+# create a vector of the residual from the Sapply slope function
+
+
+```
 
 
 # 13.x Messing with period of observation delta_t aggregated
