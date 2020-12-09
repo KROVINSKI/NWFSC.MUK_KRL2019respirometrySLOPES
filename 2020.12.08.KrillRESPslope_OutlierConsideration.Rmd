@@ -465,6 +465,9 @@ dRESPmsr <- dRESPmsr %>% mutate(RESPRound=case_when(
 )) 
 
 
+as.factor(dRESPmsr$RESPRound)
+levels(dRESPmsr$RESPRound)
+
 ```
 
 
@@ -473,22 +476,20 @@ dRESPmsr <- dRESPmsr %>% mutate(RESPRound=case_when(
 ```{r}
 #Grouping by KrillID
 dRESPmsr <- dRESPmsr %>% group_by(KrillID)
-#Order Chronologicaly
-dRESPmsr <- dRESPmsr %>% group_by(Time)
-dRESPmsr <- dRESPmsr [order(as.Date(dRESPmsr$Time, format="%d-%B-%y %H:%M:%S", tz="UTC")),]
-#Will print tibble
-dRESPmsr [order(as.Date(dRESPmsr$Time, format="%d-%B-%y %H:%M:%S", tz="UTC")),]
-
-dRESPmsr <- dRESPmsr %>% arrange(dRESPmsr(Time), .by_group = TRUE)
-
-dRESPmsr <- dRESPmsr %>%
-  mutate(date = as.Date(dRESPmsr$Time, "%d-%B-%y %H:%M:%S")) %>%
-  arrange(date)
-
-dRESPmsr %>%
-  mutate(date = as.Date(dRESPmsr$Time, "%d-%B-%y %H:%M:%S")) %>%
-  arrange(date)
-
+#Order Chronologically
+# dRESPmsr <- dRESPmsr %>% group_by(Time)
+# dRESPmsr <- dRESPmsr [order(as.Date(dRESPmsr$Time, format="%d-%B-%y %H:%M:%S", tz="UTC")),]
+# #Will print tibble
+# dRESPmsr [order(as.Date(dRESPmsr$Time, format="%d-%B-%y %H:%M:%S", tz="UTC")),]
+# dRESPmsr <- dRESPmsr %>% arrange(dRESPmsr(Time), .by_group = TRUE)
+# dRESPmsr <- dRESPmsr %>%
+#   mutate(date = as.Date(dRESPmsr$Time, "%d-%B-%y %H:%M:%S")) %>%
+#   arrange(date)
+# dRESPmsr %>%
+#   mutate(date = as.Date(dRESPmsr$Time, "%d-%B-%y %H:%M:%S")) %>%
+#   arrange(date)
+dRESPmsr <- dRESPmsr[order(dRESPmsr$Time),]
+dRESPmsr[order(dRESPmsr$Time),]
 #Organize by Round
 
 
@@ -541,6 +542,18 @@ dRESPmsr$actualDOmg <- dRESPmsr$percentDO * dRESPmsr$obseveredSatDOmg
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+vialVol <- 0.02806 #liters (rather than 28.06mL)
+
+oxygen <- vialVol * dRESPmsr$actualDOmg   
+##mg per liter is the units for Oxygen per vial
+
+dRESPmsr$oxygen <- oxygen
+
+
+
+
 ```
 
 
@@ -567,20 +580,20 @@ ggplot(dRESPmsr, aes(x = Time, y = actualDOmg, colour = SensorName)) +
 ```
 
 
-# 7.) Plotting Percent DO by Trial (80%)
+# 7.) Initial Dataframe dRESPmsr Plots, 80% DO, Oxygen Per Vial, Actual DOmg/L
 
-## 7.1a Placeholder for load map graphic
+## Trial01 Loading Map
 ![Trial01 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial01of2(2019.10.28)respirometry.png)
 
 
-## 7.1) PLotting Percent DO filtering Trial 1
-```{r 7.1) PLotting Percent DO filtering Trial 1}
+## 7.1a) PLotting Percent DO filtering Trial 1
+```{r 7.1a) PLotting Percent DO filtering Trial 1}
 
-Trial1percentDO <- filter(dRESPmsr, TrialID == "Trial01")
+T1dRESPmsr <- filter(dRESPmsr, TrialID == "Trial01")
 
-levels(Trial1percentDO$Treatment)
+levels(T1dRESPmsr$Treatment)
 
-ggplot(Trial1percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
+ggplot(T1dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
   geom_point(size = 1) +
   geom_smooth(method = "lm") +
   #scale_y_continuous(breaks=seq(250,950,by=50))   +
@@ -593,39 +606,105 @@ ggplot(Trial1percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
 ```
 
 
-## 7.2a Placeholder for load map graphic
-![Trial02 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial02of2(2019.10.28)respirometry.png)
+## 7.1b) Trial 1 Vial Oxygen over Time
+```{r 7.1b) Trial 1 Vial Oxygen over Time}
 
-## 7.2) PLotting Percent DO filtering Trial 2
-```{r 7.2) PLotting Percent DO filtering Trial 2}
-
-Trial2percentDO <- filter(dRESPmsr, TrialID == "Trial02")
-
-
-ggplot(Trial2percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
+ggplot(T1dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
   geom_point(size = 1) +
   geom_smooth(method = "lm") +
   #scale_y_continuous(breaks=seq(250,950,by=50))   +
-  ggtitle("Trial02 Percent DO") +
+  ggtitle("Trial01 Vial Oxygen over Time") +
   facet_wrap(~ Treatment) + 
-   geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+```
+
+## 7.1c) Trial01 Vial Oxygen over Time Organized by Round (1 of 8)
+Depending on ordering there were animals that went all the way to ten rounds 
+Likely that we will only consider rounds 01 through 08 due to 80% curve.
+
+Goal in plotting animals by round is to see if there is a "temporal panic profile".
+Do we need to wait long for an acclimation period? 
+This will have implications on future respirometry protocols if a chase period is introduced.
+
+
+```{r 7.1c) Trial01 Vial Oxygen over Time Organized by Round (1 of 8)}
+
+ggplot(T1dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Vial Oxygen over Time Organized by Round (1 of 8)") +
+  facet_wrap(~ Treatment) + 
   theme_bw()
 
 
 ```
 
 
-## 7.3a Placeholder for load map graphic
+
+## Trial02 Loading Map
+![Trial02 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial02of2(2019.10.28)respirometry.png)
+
+## 7.2a) PLotting Percent DO filtering Trial 2
+```{r 7.2) PLotting Percent DO filtering Trial 2}
+
+# T2dRESPmsr <- filter(dRESPmsr, TrialID == "Trial02") %>%
+# c("CUR", "CHG", "TMP", "n/a"))
+
+T2dRESPmsr <- T2dRESPmsr %>% filter(Treatment %in% c("CUR", "CHG", "TMP", "n/a"))
+
+
+ggplot(T2dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial02 Percent DO- AmbientTreatmentRemoved") +
+  facet_wrap(~ Treatment) + 
+   geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+```
+## 7.2a) Trial 2 Vial Oxygen over Time
+```{r 7.2a) Trial 2 Vial Oxygen over Time}
+
+ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial02 Vial Oxygen over Time") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+```
+
+
+## 7.2c) Trial02 Vial Oxygen over Time Organized by Round (1 of 8)
+```{r 7.2c) Trial02 Vial Oxygen over Time Organized by Round (1 of 8)}
+
+ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial02 Vial Oxygen over Time Organized by Round (1 of 8)") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+
+```
+
+## Trial03 Loading Map
 ![Trial03 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial01of2(2019.10.29)respirometry.png)
 
 
 ## 7.3) PLotting Percent DO filtering Trial 3
 ```{r 7.3) PLotting Percent DO filtering Trial 3}
 
-Trial3percentDO <- filter(dRESPmsr, TrialID == "Trial03")
+T3dRESPmsr <- filter(dRESPmsr, TrialID == "Trial03")
 
 
-ggplot(Trial3percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
+ggplot(T3dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
   geom_point(size = 1) +
   geom_smooth(method = "lm") +
   #scale_y_continuous(breaks=seq(250,950,by=50))   +
@@ -638,16 +717,47 @@ ggplot(Trial3percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
 ```
 
 
-## 7.4a Placeholder for load map graphic
+
+## 7.3a) Trial 3 Vial Oxygen over Time
+```{r 7.3a) Trial 3 Vial Oxygen over Time}
+
+ggplot(T3dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial03 Vial Oxygen over Time") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+```
+
+
+## 7.3c) Trial03 Vial Oxygen over Time Organized by Round (1 of 8)
+```{r 7.3c) Trial03 Vial Oxygen over Time Organized by Round (1 of 8)}
+
+ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial03 Vial Oxygen over Time Organized by Round (1 of 8)") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+
+```
+
+
+
+## Trial04 Loading Map
 ![Trial04 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial02of2(2019.10.29)respirometry.png)
 
 ## 7.4) PLotting Percent DO filtering Trial 4
 ```{r 7.4) PLotting Percent DO filtering Trial 4}
 
-Trial4percentDO <- filter(dRESPmsr, TrialID == "Trial04")
+T4dRESPmsr <- filter(dRESPmsr, TrialID == "Trial04")
 
 
-ggplot(Trial4percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
+ggplot(T4dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
   geom_point(size = 1) +
   geom_smooth(method = "lm") +
   #scale_y_continuous(breaks=seq(250,950,by=50))   +
@@ -661,24 +771,42 @@ ggplot(Trial4percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
 
 
 
+## 7.4a) Trial 4 Vial Oxygen over Time
+```{r 7.4a) Trial 4 Vial Oxygen over Time}
+
+ggplot(T4dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial04 Vial Oxygen over Time") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+```
+
+
+## 7.4c) Trial04 Vial Oxygen over Time Organized by Round (1 of 8)
+```{r 7.4c) Trial04 Vial Oxygen over Time Organized by Round (1 of 8)}
+
+ggplot(T4dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial04 Vial Oxygen over Time Organized by Round (1 of 8)") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+
+```
+
+
+
 # 8.) Analysis, Respirometry - Creating the Slope Function 
 ```{r 8.) Analysis, Respirometry - Creating the Slope Function}
 #*********************************
 ## 8.) Analysis, Respirometry - Creating the Slope Function  
 #*********************************  
 
-vialVol <- 0.02806 #liters (rather than 28.06mL)
-
-oxygen <- vialVol * dRESPmsr$actualDOmg   
-##mg per liter is the units for Oxygen per vial
-
-dRESPmsr$oxygen <- oxygen
-
-
-#create plots off this oxygen 
-
-
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 #nmol/vial; conversion for L to ml and umol to nmol cancels
 #slope funcion of 2 vectors
 slope <- function(y,x){
@@ -778,22 +906,22 @@ X axis is the number of times I "sampled" with the presense
 
 
 outlier analysis rules..
-# justification checks - outlier
-# two mechanisms for cause of highter residuals- bubbles on the sensor- if there's a brief spirt of activity with a CO2 bubble
-#panic between bubbles- why is it higher?
-#what happens if the krill poop....
-#explaining these air (supposed) bubbles
+justification checks - outlier
+two mechanisms for cause of highter residuals- bubbles on the sensor- if there's a brief spirt of activity with a CO2 bubble
+panic between bubbles- why is it higher?
+ what happens if the krill poop....
+ explaining these air (supposed) bubbles
 
 
 
-# create a loop to go through trials and generate a list of all the model outputs
-# take df and break down by trials (break dtotal into 4 datasets)
-# break down for each vial 
-# apply the foritfy model to a trial
-# set a filtering threshold on the resulting fortify model based on cooks standard distance
+ create a loop to go through trials and generate a list of all the model outputs
+ take df and break down by trials (break dtotal into 4 datasets)
+ break down for each vial 
+ apply the foritfy model to a trial
+ set a filtering threshold on the resulting fortify model based on cooks standard distance
 
 
-# creating a loop for with and without outliers
+creating a loop for with and without outliers
 
 df is original dataframe
 looking to make a selection if anything is less than this cooks threshold
@@ -801,24 +929,7 @@ looking to make a selection if anything is less than this cooks threshold
 
 df[dmod$.cooksd <= 4/n,]
 
-## 13.a Determining True Start Time
 
-```{r }
-
-trial1KRILL <- filter(krillslopes, TrialID.x == "Trial01")
-
-ggplot(trial1KRILL, aes(x = Time, y = oxygen, colour = KrillID)) +
-  geom_point(size = 1) +
-  geom_smooth(method = "lm") +
-  #scale_y_continuous(breaks=seq(250,950,by=50))   +
-  ggtitle("Trial01 Oxygen mg/L Accross all Treatments") +
-  facet_wrap(~ Treatment) + 
-   # geom_hline(yintercept = c(.8), colour = "red") +
-  theme_bw()
-
-
-
-```
 
 ## 1x. this is broken plot Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)
 ```{r Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)}
@@ -843,7 +954,24 @@ ggplot(trial1KRILL.time, aes(x = Time, y = oxygen, colour = KrillID)) +
 
 
 
+## 13.a Determining True Start Time
 
+```{r }
+
+trial1KRILL <- filter(krillslopes, TrialID.x == "Trial01")
+
+ggplot(trial1KRILL, aes(x = Time, y = oxygen, colour = KrillID)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Oxygen mg/L Accross all Treatments") +
+  facet_wrap(~ Treatment) + 
+   # geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+
+```
 
 
 
