@@ -342,7 +342,7 @@ dRESPmsr <- dRESPmsr %>% mutate(RESPRound=case_when(
 # ---TRIAL TWO, ROUND---SIX--- #
 ## Second Trial,   Round 6 on 2019-10-28 began 20:05:01
 ## Second Trial,   Round 6 on 2019-10-28 ended 20:20:00
-  ((Time >= as.POSIXct("2019-10-28 20:45:01", tz = "UTC")) 
+  ((Time >= as.POSIXct("2019-10-28 20:05:01", tz = "UTC")) 
    & (Time < as.POSIXct("2019-10-28 20:20:00", tz = "UTC"))) ~ "T2Round6", 
  
 # ---TRIAL TWO, ROUND---SEVEN--- #
@@ -586,7 +586,7 @@ ggplot(dRESPmsr, aes(x = Time, y = actualDOmg, colour = SensorName)) +
 ![Trial01 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial01of2(2019.10.28)respirometry.png)
 
 
-## 7.1a) PLotting Percent DO filtering Trial 1
+### 7.1a) PLotting Percent DO filtering Trial 1
 ```{r 7.1a) PLotting Percent DO filtering Trial 1}
 
 T1dRESPmsr <- filter(dRESPmsr, TrialID == "Trial01")
@@ -606,7 +606,7 @@ ggplot(T1dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
 ```
 
 
-## 7.1b) Trial 1 Vial Oxygen over Time
+### 7.1b) Trial 1 Vial Oxygen over Time
 ```{r 7.1b) Trial 1 Vial Oxygen over Time}
 
 ggplot(T1dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
@@ -619,7 +619,7 @@ ggplot(T1dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
 
 ```
 
-## 7.1c) Trial01 Vial Oxygen over Time Organized by Round (1 of 8)
+### 7.1c) Trial01 Vial Oxygen over Time Organized by Round (1 of 8)
 Depending on ordering there were animals that went all the way to ten rounds 
 Likely that we will only consider rounds 01 through 08 due to 80% curve.
 
@@ -646,12 +646,13 @@ ggplot(T1dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
 ## Trial02 Loading Map
 ![Trial02 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial02of2(2019.10.28)respirometry.png)
 
-## 7.2a) PLotting Percent DO filtering Trial 2
+### 7.2a) PLotting Percent DO filtering Trial 2
 ```{r 7.2) PLotting Percent DO filtering Trial 2}
 
 # T2dRESPmsr <- filter(dRESPmsr, TrialID == "Trial02") %>%
 # c("CUR", "CHG", "TMP", "n/a"))
 
+T2dRESPmsr <- filter(dRESPmsr, TrialID == "Trial02")
 T2dRESPmsr <- T2dRESPmsr %>% filter(Treatment %in% c("CUR", "CHG", "TMP", "n/a"))
 
 
@@ -666,7 +667,9 @@ ggplot(T2dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
 
 
 ```
-## 7.2a) Trial 2 Vial Oxygen over Time
+
+
+### 7.2a) Trial 2 Vial Oxygen over Time
 ```{r 7.2a) Trial 2 Vial Oxygen over Time}
 
 ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
@@ -680,7 +683,13 @@ ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
 ```
 
 
-## 7.2c) Trial02 Vial Oxygen over Time Organized by Round (1 of 8)
+### 7.2c) Trial02 Vial Oxygen over Time Organized by Round (1 of 8)
+
+Second Trial,   Round 1 on 2019-10-28 began 18:50:01
+Second Trial,   Round 8 on 2019-10-28 ended 20:50:59
+
+What is going on with you Trial 02
+
 ```{r 7.2c) Trial02 Vial Oxygen over Time Organized by Round (1 of 8)}
 
 ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
@@ -698,7 +707,7 @@ ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
 ![Trial03 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial01of2(2019.10.29)respirometry.png)
 
 
-## 7.3) PLotting Percent DO filtering Trial 3
+### 7.3) PLotting Percent DO filtering Trial 3
 ```{r 7.3) PLotting Percent DO filtering Trial 3}
 
 T3dRESPmsr <- filter(dRESPmsr, TrialID == "Trial03")
@@ -718,7 +727,7 @@ ggplot(T3dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
 
 
 
-## 7.3a) Trial 3 Vial Oxygen over Time
+### 7.3a) Trial 3 Vial Oxygen over Time
 ```{r 7.3a) Trial 3 Vial Oxygen over Time}
 
 ggplot(T3dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
@@ -732,10 +741,10 @@ ggplot(T3dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
 ```
 
 
-## 7.3c) Trial03 Vial Oxygen over Time Organized by Round (1 of 8)
+### 7.3c) Trial03 Vial Oxygen over Time Organized by Round (1 of 8)
 ```{r 7.3c) Trial03 Vial Oxygen over Time Organized by Round (1 of 8)}
 
-ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
+ggplot(T3dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
   geom_point(size = 1) +
   geom_smooth(method = "lm") +
   #scale_y_continuous(breaks=seq(250,950,by=50))   +
@@ -751,7 +760,7 @@ ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
 ## Trial04 Loading Map
 ![Trial04 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial02of2(2019.10.29)respirometry.png)
 
-## 7.4) PLotting Percent DO filtering Trial 4
+### 7.4) PLotting Percent DO filtering Trial 4
 ```{r 7.4) PLotting Percent DO filtering Trial 4}
 
 T4dRESPmsr <- filter(dRESPmsr, TrialID == "Trial04")
@@ -771,7 +780,7 @@ ggplot(T4dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
 
 
 
-## 7.4a) Trial 4 Vial Oxygen over Time
+### 7.4a) Trial 4 Vial Oxygen over Time
 ```{r 7.4a) Trial 4 Vial Oxygen over Time}
 
 ggplot(T4dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
@@ -785,7 +794,11 @@ ggplot(T4dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
 ```
 
 
-## 7.4c) Trial04 Vial Oxygen over Time Organized by Round (1 of 8)
+### 7.4c) Trial04 Vial Oxygen over Time Organized by Round (1 of 8)
+Acclimination period snuck in from the start
+Second Trial,   Round 1 on 2019-10-29 began 17:23:01
+Second Trial,   Round 8 on 2019-10-29 ended 19:23:59
+
 ```{r 7.4c) Trial04 Vial Oxygen over Time Organized by Round (1 of 8)}
 
 ggplot(T4dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
@@ -899,7 +912,125 @@ dSlopes$WetWeight<- dRESPanimal$Size
 ```
 
 
-# 13.) Investigating slope, R squares and outliers
+
+# 12.) Investigating Outliers
+The dtotal dataframe is broken up into four different dataframes based on Trial ID.
+These dataframes will be further filtered to remove the Ambient Treatment.
+Some rounds of respirometry featured a greater number ambient treatment animals and should account for the differences in number of observations between dataframes.
+
+## 12.1 Investigating Outliers by Trial
+```{r 12.1 Investigating Outliers by Trial}
+
+# Filtering down dtotal to Trial 01, 02, 03 & 04 with only included treatments
+# Trial 01
+dtotal$TrialID <- dtotal$TrialID.x 
+T1dTotal <- filter(dtotal, TrialID == "Trial01")
+T1dTotal <- T1dTotal %>% filter(Treatment %in% c("CUR", "CHG", "TMP", "n/a"))
+dim(T1dTotal)
+#[1] 932  76
+
+# Trial 02
+T2dTotal <- filter(dtotal, TrialID == "Trial02")
+T2dTotal <- T2dTotal %>% filter(Treatment %in% c("CUR", "CHG", "TMP", "n/a"))
+dim(T2dTotal)
+# [1] 568  76
+
+# Trial 03
+T3dTotal <- filter(dtotal, TrialID == "Trial03")
+T3dTotal <- T3dTotal %>% filter(Treatment %in% c("CUR", "CHG", "TMP", "n/a"))
+dim(T3dTotal)
+# [1] 926  76
+
+# Trial 04
+T4dTotal <- filter(dtotal, TrialID == "Trial04")
+T4dTotal <- T4dTotal %>% filter(Treatment %in% c("CUR", "CHG", "TMP", "n/a"))
+dim(T4dTotal)
+# [1] 349  76
+
+```
+
+
+**Question**: Trial 04 does seem small- [1] 349  76 | were we just so more efficent at using the PRESENS probe than we were with trail 02 on day 01?
+
+###12.1a Investigating Outliers by Trial- timeseries plots showing the four distinct dataframes
+```{r 12.1a Investigating Outliers by Trial- timeseries plots}
+
+par(mfrow = c(2,2))
+plot(T1dTotal$delta_t, T1dTotal$oxygen)
+plot(T2dTotal$delta_t, T2dTotal$oxygen)
+plot(T3dTotal$delta_t, T3dTotal$oxygen)
+plot(T4dTotal$delta_t, T4dTotal$oxygen)
+
+
+```
+
+
+## 12.2 Example of loop and function writting Kate is trying to for each krill
+## 12.2a) take 1 df at a time 
+```{r 12.2a take the first dataframe}
+
+# read the 1 dataframe per trial
+# observe it learn it's secrets
+dim(T1dTotal)
+kable(T1dTotal)
+```
+
+
+## 12.2b) Use the unique tool to get names for each krill
+```{r 12.2b) Use the unique tool to get names for each krill}
+
+unique(T1dTotal$KrillID)
+qT1dTotal <- unique(T1dTotal$KrillID)
+kable(qT1dTotal)
+
+```
+
+
+
+## 12.2c) Create a linear model object for 1 krill 
+```{r 12.2c) Create a linear model object for 1 krill}
+
+df_KrillR11 <- T1dTotal[T1dTotal$KrillID == "Trial01_KrilLR11",]
+lm_KrillR11 <- lm(df_KrillR11$oxygen ~ df_KrillR11$delta_t)
+
+```
+
+
+
+## 12.2d) Use the fortify function to get the residuals and cook.sd for each observation
+```{r 12.2d) Use the fortify function to get the residuals and cook.sd for each observation}
+
+#lm_KrillR11 <- lm(df_KrillR11$oxygen ~ df_KrillR11$delta_t)
+#lm_KrillR11 is the referenced linear model object
+df.lm.KrillR11 <- fortify(lm_KrillR11) 
+kable(df.lm.KrillR11)
+
+```
+## 12.2e) Indentify 
+```{r 12.2d) Use the fortify function to get the residuals and cook.sd for each observation}
+
+KrillR11noOUT <- mod.df.KrillR11[mod.df.KrillR11$.cooksd <= 4/(length(dfTrial01_KrilLR11$KrillID)), ]
+
+
+```
+
+
+
+
+## 12.x) Kate Tries to Write a "FOR" loop
+Index variable "pony" 
+```{r 12.2) Kate Tries to Write a "FOR" loop}
+
+# # variable in vector "pony"
+# for {(pony in T1dTotal)
+#   #commands
+# }
+
+
+```
+
+
+
 
 Determinining in-house thresholds for outlierness
 X axis is the number of times I "sampled" with the presense
@@ -925,17 +1056,12 @@ creating a loop for with and without outliers
 
 df is original dataframe
 looking to make a selection if anything is less than this cooks threshold
-
-
 df[dmod$.cooksd <= 4/n,]
+n will likely be between 42-47 observations in a respirometry round. 
 
 
+```{r}
 
-
-
-## 13.a Determining True Start Time
-
-```{r }
 
 
 
@@ -943,6 +1069,35 @@ df[dmod$.cooksd <= 4/n,]
 ```
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 13.) Investigating slope, R squares and outliers
+
+
+
+
+
+
+
+
+
+
+## 13.a Determining True Start Time
 
 ## 1x. this is broken plot Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)
 ```{r Trial01 Oxygen mg/L Accross all Treatments (start data at 1500)}
@@ -983,12 +1138,24 @@ autoplot(fitTrial1Mod )
 ```{r}
 
 
-modTrial1 <- lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t)
-modTrial1 <- fortify(modTrial1)
+# modTrial1 <- lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t)
+# modTrial1 <- fortify(modTrial1)
+# 
+
+# 
+# 
+# trial1KRILL$lmresult <- (lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t))
+# 
+# 
+# ggplot(modTrial1, aes(x = .fitted, y = .resid)) + geom_point(size =1)
+# 
+# ggplot(trial1KRILL, aes(x= delta_t, y =oxygen )) + geom_point(size =1)
+
+## definition for outliers in a linear regression- our loose definition
+## residuals higher than .03 across trials? 
 
 
-
-dfTrial01_KrilLR11 <- trial1KRILL[trial1KRILL$KrillID == "Trial01_KrilLR11",]
+dfTrial01_KrilLR11 <- dtotal[dtotal$KrillID == "Trial01_KrilLR11",]
 length(dfTrial01_KrilLR11$delta_t)
 # 47
 mod.df.KrillR11 <- lm(dfTrial01_KrilLR11$oxygen ~ dfTrial01_KrilLR11$delta_t)
@@ -1072,15 +1239,6 @@ ggplot(trial1KRILL, aes(x= delta_t, y =oxygen )) + geom_point(size =1)
 
 ```{r}
 
-trial1KRILL$lmresult <- (lm(trial1KRILL$oxygen ~ trial1KRILL$delta_t))
-
-
-ggplot(modTrial1, aes(x = .fitted, y = .resid)) + geom_point(size =1)
-
-ggplot(trial1KRILL, aes(x= delta_t, y =oxygen )) + geom_point(size =1)
-
-## definition for outliers in a linear regression- our loose definition
-## residuals higher than .03 across trials? 
 
 
 
