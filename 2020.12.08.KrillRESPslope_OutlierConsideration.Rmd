@@ -1002,17 +1002,86 @@ lm_KrillR11 <- lm(df_KrillR11$oxygen ~ df_KrillR11$delta_t)
 
 #lm_KrillR11 <- lm(df_KrillR11$oxygen ~ df_KrillR11$delta_t)
 #lm_KrillR11 is the referenced linear model object
-df.lm.KrillR11 <- fortify(lm_KrillR11) 
+df.lm.KrillR11 <- fortify(lm_KrillR11, df_KrillR11)
 kable(df.lm.KrillR11)
 
 ```
-## 12.2e) Indentify 
-```{r 12.2d) Use the fortify function to get the residuals and cook.sd for each observation}
 
-KrillR11noOUT <- mod.df.KrillR11[mod.df.KrillR11$.cooksd <= 4/(length(dfTrial01_KrilLR11$KrillID)), ]
+
+
+## 12.2e) Indentify which observations have a cooksd score above 4/n
+n is the whole number of observations on that krill in the vial
+```{r 12.2e) Indentify which observations have a cooksd score above 4/n}
+
+df.lm.KrillR11sat$.cooksd <- df.lm.KrillR11[df.lm.KrillR11$.cooksd <= 4/(length(df.lm.KrillR11$KrillID)), ]
+
+```
+
+
+## 12.2f) Use one dataframe to sort another
+```{r 12.2f) Use one dataframe to sort another}
+
+df.lm.KrillR11$.cooksd <= 4/(length(df.lm.KrillR11$KrillID))
 
 
 ```
+
+
+
+```{r}
+
+KRILLLmSparkle <- function(dfToFilter) {
+  # Determine the unique list of Krill IDs
+  krillIds <- unique(dfToFilter$KrillID)
+  
+  # Create an empty list to hold the filtered dataframes we'll eventually combine
+  filteredData <- list()
+  filteredDataIndex <- 1
+  
+  # Loop over each Krill ID
+  for (krillId in krillIds) {
+    #print(krillId)
+    # Split the dataframe by the Krill ID
+    filteredKrillIdData <- dfToFilter[dfToFilter$KrillID == krillId,]
+    #print(filteredKrillIdData)
+    
+    # Create the Linear Model of the resulting sub data frame
+    lm_Krill <- lm(filteredKrillIdData$oxygen ~ filteredKrillIdData$delta_t)
+    
+    # Calculate the residuals and cook stdev scores and layer them on as columns into the filtered dataframe
+    df.lm.Krill <- fortify(lm_Krill, filteredKrillIdData) 
+    #print(df.lm.Krill)
+    
+    # Filter out measurements that are outliers based on the cook stdev value
+    df.lm.Krill <- df.lm.Krill[df.lm.Krill$.cooksd <= 4/(length(df.lm.Krill$KrillID)), ]
+    #print(df.lm.Krill)
+    
+    # Merge the filtered data back into the dataframe to return
+    filteredData[[filteredDataIndex]] <- df.lm.Krill
+    filteredDataIndex <- filteredDataIndex + 1
+  }
+  
+  # Combine the list of dataframes into a single dataframe and return it
+  return(do.call(rbind, filteredData))
+}
+
+# stop here and go to next unique krill ID
+
+T1dTotal.filtered <- KRILLLmSparkle(T1dTotal)
+T2dTotal.filtered <- KRILLLmSparkle(T2dTotal)
+T3dTotal.filtered <- KRILLLmSparkle(T3dTotal)
+T4dTotal.filtered <- KRILLLmSparkle(T4dTotal)
+
+par(mfrow = c(2,2))
+plot(T1dTotal.filtered$delta_t, T1dTotal.filtered$oxygen)
+plot(T2dTotal.filtered$delta_t, T2dTotal.filtered$oxygen)
+plot(T3dTotal.filtered$delta_t, T3dTotal.filtered$oxygen)
+plot(T4dTotal.filtered$delta_t, T4dTotal.filtered$oxygen)
+
+
+```
+
+
 
 
 
