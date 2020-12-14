@@ -57,7 +57,7 @@ Sequence ,FileName,SensorName,MOATS,Treatment,LoadingLocation,GlassVialNumber,Sp
 18,2019.10.29_RESPR_T1,KRLr3_56             ,13,CHG,J3,18,Euphausia pacifica,2,0.0202,Trial03
 19,2019.10.29_RESPR_T1,KRLr3_57             ,7,CUR,J5,19,Euphausia pacifica,3.16,0.045,Trial03
 1,2019.10.29_RESPR_T2,KRLr4_58             ,10,CUR,A2,1,Euphausia pacifica,2.59,0.0248,Trial04
-2,2019.10.29_RESPR_T2,KRLr4_59             ,blank,NA,A4,2,Euphausia pacifica,n/a,n/a,Trial04
+2,2019.10.29_RESPR_T2,KRLr4_59             ,blank,n/a,A4,2,Euphausia pacifica,n/a,n/a,Trial04
 3,2019.10.29_RESPR_T2,KRLr4_60             ,5,AMB,B1,3,Euphausia pacifica,3.13,0.0221,Trial04
 4,2019.10.29_RESPR_T2,KRLr4_61             ,5,AMB,B5,4,Euphausia pacifica,2.97,0.0425,Trial04
 5,2019.10.29_RESPR_T2,KRLr4_62             ,10,CUR,C2,5,Euphausia pacifica,2.5,0.0174,Trial04
@@ -66,8 +66,8 @@ Sequence ,FileName,SensorName,MOATS,Treatment,LoadingLocation,GlassVialNumber,Sp
 8,2019.10.29_RESPR_T2,KRLr4_65             ,5,CUR,D5,8,Euphausia pacifica,2.83,0.032,Trial04
 9,2019.10.29_RESPR_T2,KRLr4_66             ,5,AMB,F1,9,Euphausia pacifica,3.25,0.0385,Trial04
 10,2019.10.29_RESPR_T2,KRLr4_67             ,10,CUR,F5,10,Euphausia pacifica,3.29,0.0602,Trial04
-11,2019.10.29_RESPR_T2,KRLr4_68             ,blank,NA,G2,11,Euphausia pacifica,n/a,n/a,Trial04
-12,2019.10.29_RESPR_T2,KRLr4_69             ,13,NA,G4,12,Euphausia pacifica,2.59,0.0252,Trial04
+11,2019.10.29_RESPR_T2,KRLr4_68             ,blank,n/a,G2,11,Euphausia pacifica,n/a,n/a,Trial04
+12,2019.10.29_RESPR_T2,KRLr4_69             ,13,n/a,G4,12,Euphausia pacifica,2.59,0.0252,Trial04
 13,2019.10.29_RESPR_T2,KRLr4_70             ,10,CHG,H1,13,Euphausia pacifica,3.02,0.0315,Trial04
 14,2019.10.29_RESPR_T2,KRLr4_71             ,5,CUR,H3,14,Euphausia pacifica,2.41,0.0179,Trial04
 15,2019.10.29_RESPR_T2,KRLr4_72             ,5,AMB,H5,15,Euphausia pacifica,3.3,0.0327,Trial04
