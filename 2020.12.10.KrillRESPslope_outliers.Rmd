@@ -56,6 +56,7 @@ library(ggfortify)
 library(stringr)
 library(nlme)
 library(RColorBrewer)
+library(patchwork)
 #statistical analysis
 library(gdata)
 library(rsq)
@@ -170,7 +171,7 @@ dRESPmsr <- subset(dRESPmsr, Value != "---")
 unique(dRESPmsr$SensorName)
 UniqueSensorNames <- levels(dRESPmsr$SensorName)
 write.table(UniqueSensorNames, file = "2020.11.30DRESPmsr_UniqueSensorNames.csv")
-kable(UniqueSensorNames)
+#kable(UniqueSensorNames)
 
 ```
 
@@ -466,7 +467,7 @@ dRESPmsr <- dRESPmsr %>% mutate(RESPRound=case_when(
 
 
 as.factor(dRESPmsr$RESPRound)
-levels(dRESPmsr$RESPRound)
+#levels(dRESPmsr$RESPRound)
 
 ```
 
@@ -979,7 +980,7 @@ plot(T4dTotal$delta_t, T4dTotal$oxygen)
 # read the 1 dataframe per trial
 # observe it learn it's secrets
 dim(T1dTotal)
-kable(T1dTotal)
+#kable(T1dTotal)
 ```
 
 
@@ -988,7 +989,7 @@ kable(T1dTotal)
 
 unique(T1dTotal$KrillID)
 qT1dTotal <- unique(T1dTotal$KrillID)
-kable(qT1dTotal)
+#kable(qT1dTotal)
 
 ```
 
@@ -1010,7 +1011,7 @@ lm_KrillR11 <- lm(df_KrillR11$oxygen ~ df_KrillR11$delta_t)
 #lm_KrillR11 <- lm(df_KrillR11$oxygen ~ df_KrillR11$delta_t)
 #lm_KrillR11 is the referenced linear model object
 df.lm.KrillR11 <- fortify(lm_KrillR11, df_KrillR11)
-kable(df.lm.KrillR11)
+#kable(df.lm.KrillR11)
 
 ```
 
@@ -1111,6 +1112,132 @@ title("Trial 04, Outliers Included")
 ```
 
 
+### 13.1b) Trial 1 Vial Oxygen over Time
+```{r 13.1b) Trial 1 Vial Oxygen over Time}
+
+# T1dTotal original 
+# T1dTotal.filtered outliers removed 
+
+#patchwork
+
+orip1 <- ggplot(T1dTotal, aes(x = Time, y = oxygen, colour = Treatment)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Vial Oxygen over Time, Original with Outliers") +
+  #geom_hline(yintercept = c(.8), colour = "red") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+
+orip2 <- ggplot(T2dTotal, aes(x = Time, y = oxygen, colour = Treatment)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial02 Vial Oxygen over Time, Original with Outliers") +
+  #geom_hline(yintercept = c(.8), colour = "red") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+orip3 <- ggplot(T3dTotal, aes(x = Time, y = oxygen, colour = Treatment)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial03 Vial Oxygen over Time, Original with Outliers") +
+  #geom_hline(yintercept = c(.8), colour = "red") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+
+orip4 <- ggplot(T4dTotal, aes(x = Time, y = oxygen, colour = Treatment)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial04 Vial Oxygen over Time, Original with Outliers") +
+  #geom_hline(yintercept = c(.8), colour = "red") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+
+# T1dTotal.filtered outliers removed 
+
+
+filtp1 <- ggplot(T1dTotal.filtered, aes(x = Time, y = oxygen, colour = Treatment)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Vial Oxygen over Time, Original with Outliers") +
+  #geom_hline(yintercept = c(.8), colour = "red") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+
+filtp2 <- ggplot(T2dTotal.filtered, aes(x = Time, y = oxygen, colour = Treatment)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial02 Vial Oxygen over Time, Original with Outliers") +
+  #geom_hline(yintercept = c(.8), colour = "red") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+filtp3 <- ggplot(T3dTotal.filtered, aes(x = Time, y = oxygen, colour = Treatment)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial03 Vial Oxygen over Time, Original with Outliers") +
+  #geom_hline(yintercept = c(.8), colour = "red") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+
+filtp4 <- ggplot(T4dTotal.filtered, aes(x = Time, y = oxygen, colour = Treatment)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial04 Vial Oxygen over Time, Original with Outliers") +
+  #geom_hline(yintercept = c(.8), colour = "red") +
+  facet_wrap(~ Treatment) + 
+  theme_bw()
+
+
+(orip1|filtp1)
+
+
+# ((p1|p2)/(p3|p4))|guide_area()+plot_layout(guides = "collect", rel_width=c(4,1))
+
+#((p1|p2)/(p3|p4))|guide_area()+plot_layout(guides = "collect", widths =c(4,1))
+
+#((p1|p2)/(p3|p4))|guide_area()+plot_layout(guides = "collect", widths = c(10, 10, 5))
+
+#(p1|p2)/(p3|p4) + plot_layout(guides= "collect") &  theme(text = element_text(size = 10))
+
+
+#guide_area()
+
+
+```
+
+
+
+### patchwork
+```{r 13.1c pathwork with plot guides with guide areas}
+
+# (p1|p2)/(p3|p4) + 
+#   plot_layout(guides= "collect")
+#       guide_area() + plot_layout(guides = 'collect')
+
+
+# ((p1|p2)/(p3|p4))|guide_area()+plot_layout(guides = "collect", rel_width=c(4,1))
+
+## rel_width=c(4,1)) possible 2, 2, 1
+
+
+```
+
+
+
+
 ### 13.2) Review of Oxygen Per Vial Plots (now with outliers removed)
 
 ### 13.2a) Trial 1 Vial Oxygen over Time
@@ -1118,6 +1245,9 @@ title("Trial 04, Outliers Included")
 
 # T1dTotal original 
 # T1dTotal.filtered outliers removed 
+
+#patchwork
+
 
 ggplot(T1dTotal, aes(x = Time, y = percentDO, colour = KrillID)) +
   geom_point(size = 1) +
@@ -1294,7 +1424,7 @@ ggplot(T4dTotal.filtered, aes(x = Time, y = percentDO, colour = KrillID)) +
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-# Creating four seperate means from the blank vials per trial
+# Creating four separate means from the blank vials per trial
 x <- subset(dSlopes, dSlopes$MOATS == "blank")
 
 xtrial1 <- subset(x, x$TrialID == "Trial01")
@@ -1309,23 +1439,25 @@ blankmeanslope4 <- mean(xtrial4$slope)
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-#Creating new corrected varibles for slopes adjusted for blank vials and size of animal
+#Creating new corrected variables for slopes adjusted for blank vials and size of animal
 dSlopes$CorrSlope <- ""
 dSlopes$CorrSlope <- as.numeric(dSlopes$CorrSlope)
 dSlopes$slope <- as.numeric(dSlopes$slope)
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-# Conditonal Statement directing certain means to their respective trials
+# Conditional Statement directing certain means to their respective trials
 # take absolute values not to add a negative nubmer
 
 dSlopes <- dSlopes %>% mutate(CorrSlope=case_when(
     (dSlopes$MOATS == "blank" ~ dSlopes$slope),
-    (dSlopes$TrialID == "Trial01" ~ dSlopes$slope-(abs(blankmeanslope1))),
-    (dSlopes$TrialID == "Trial02" ~ dSlopes$slope-(abs(blankmeanslope2))),
-    (dSlopes$TrialID == "Trial03" ~ dSlopes$slope-(abs(blankmeanslope3))),
-    (dSlopes$TrialID == "Trial04" ~ dSlopes$slope-(abs(blankmeanslope4))),
+    (dSlopes$TrialID == "Trial01" ~ dSlopes$slope-((blankmeanslope1))),
+    (dSlopes$TrialID == "Trial02" ~ dSlopes$slope-((blankmeanslope2))),
+    (dSlopes$TrialID == "Trial03" ~ dSlopes$slope-((blankmeanslope3))),
+    (dSlopes$TrialID == "Trial04" ~ dSlopes$slope-((blankmeanslope4))),
     TRUE ~ as.numeric(0)
 ))
+
+
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # Correcting for the size of the animal 
 dSlopes$WetWeight <- as.numeric(dSlopes$WetWeight)
