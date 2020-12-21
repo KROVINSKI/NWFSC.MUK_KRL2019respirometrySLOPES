@@ -2034,7 +2034,9 @@ krillslopes80 <- merge(ks80total, ksSlopes80, by="KrillID")
 # krillslopes80$SensorName <- ""
 
 krillslopes80 <- krillslopes80 %>% group_by(KrillID)
-dRESPanimal <- dRESPanimal %>% group_by(SensorName)
+
+dRESPanimal80 <- filter(dRESPanimal, Treatment != "AMB")
+dRESPanimal80 <- dRESPanimal80 %>% group_by(SensorName)
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
