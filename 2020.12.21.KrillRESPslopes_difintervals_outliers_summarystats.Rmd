@@ -2029,26 +2029,26 @@ for(i in 1:length(ksSlopes80$KrillID)){
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-krillslopes80 <- merge(ks80total, ksSlopes80, by="KrillID")
+# krillSlopes80 <- merge(ksSlopes80, ks80total, by="KrillID")
 
 # krillslopes80$SensorName <- ""
 
-krillslopes80 <- krillslopes80 %>% group_by(KrillID)
-
+ksSlopes80 <- ksSlopes80 %>% group_by(KrillID)
+dRESPanimal80 <- dRESPanimal
 dRESPanimal80 <- filter(dRESPanimal, Treatment != "AMB")
 dRESPanimal80 <- dRESPanimal80 %>% group_by(SensorName)
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-kdSlopes80$KrillID <- as.character(kdSlopes80$KrillID)
-kdSlopes80$SensorName <- dRESPanimal$SensorName
-kdSlopes80$TrialID <- dRESPanimal$TrialID
-kdSlopes80$MOATS <- dRESPanimal$MOATS
-kdSlopes80$Treatment<- dRESPanimal$Treatment
-kdSlopes80$LoadingLocation<- dRESPanimal$LoadingLocation
-kdSlopes80$VialNum<- dRESPanimal$GlassVialNumber
-kdSlopes80$TelsonLength<- dRESPanimal$TelsonLength..mm.
-kdSlopes80$WetWeight<- dRESPanimal$Size
+ksSlopes80$KrillID <- as.character(ksSlopes80$KrillID)
+ksSlopes80$SensorName <- dRESPanimal80$SensorName
+ksSlopes80$TrialID <- dRESPanimal80$TrialID
+ksSlopes80$MOATS <- dRESPanimal80$MOATS
+ksSlopes80$Treatment<- dRESPanimal80$Treatment
+ksSlopes80$LoadingLocation<- dRESPanimal80$LoadingLocation
+ksSlopes80$VialNum<- dRESPanimal80$GlassVialNumber
+ksSlopes80$TelsonLength<- dRESPanimal80$TelsonLength..mm.
+ksSlopes80$WetWeight<- dRESPanimal80$Size
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
@@ -2172,6 +2172,96 @@ ggplot(dSlopes, aes(Treatment, CorrSlope)) +
             theme_bw() 
 
 ```
+
+
+# 2x.) Analysis, Respirometry - Correcting the Slope for Blanks - 80% cutoff
+```{r 2x.) Analysis, Respirometry - Correcting the Slope for Blanks  - 80% cutoff}
+
+#*********************************
+## 2x.) Analysis, Respirometry - Correcting the Slope for Blanks  - 80% cutoff
+#*********************************
+
+#blank corrected slope and blank-size corrected slope
+## need to correct all slopes with the blanks' slope
+## this is the background respiration of whatever phtyos and instrument drift
+## create a mean blank slope per trial
+## merge with the master(krill slopes) and "correct" all slopes against mean value (per trial)
+# x is equal to the blank vials  
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+# Creating four separate means from the blank vials per trial
+x80 <- subset(ksSlopes80, ksSlopes80$MOATS == "blank")
+
+x80trial1 <- subset(x80, x80$TrialID == "Trial01")
+x80trial2 <- subset(x80, x80$TrialID == "Trial02")
+x80trial3 <- subset(x80, x80$TrialID == "Trial03")
+x80trial4 <- subset(x80, x80$TrialID == "Trial04")
+
+blank80meanslope1 <- mean(x80trial1$slope)
+blank80meanslope2 <- mean(x80trial2$slope)
+blank80meanslope3 <- mean(x80trial3$slope)
+blank80meanslope4 <- mean(x80trial4$slope)
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+#Creating new corrected variables for slopes adjusted for blank vials and size of animal
+ksSlopes80$CorrSlope <- ""
+ksSlopes80$CorrSlope <- as.numeric(ksSlopes80$CorrSlope)
+ksSlopes80$slope <- as.numeric(ksSlopes80$slope)
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+# Conditional Statement directing certain means to their respective trials
+# take absolute values not to add a negative nubmer
+
+ksSlopes80 <- ksSlopes80 %>% mutate(CorrSlope=case_when(
+    (ksSlopes80$MOATS == "blank" ~ ksSlopes80$slope),
+    (ksSlopes80$TrialID == "Trial01" ~ ksSlopes80$slope-((blank80meanslope1))),
+    (ksSlopes80$TrialID == "Trial02" ~ ksSlopes80$slope-((blank80meanslope2))),
+    (ksSlopes80$TrialID == "Trial03" ~ ksSlopes80$slope-((blank80meanslope3))),
+    (ksSlopes80$TrialID == "Trial04" ~ ksSlopes80$slope-((blank80meanslope4))),
+    TRUE ~ as.numeric(0)
+))
+
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+# Correcting for the size of the animal 
+ksSlopes80$WetWeight <- as.numeric(ksSlopes80$WetWeight)
+ksSlopes80$WetWeightSlope <- ksSlopes80$CorrSlope/ksSlopes80$WetWeight
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+#create plots and perhaps convert to larger units
+
+``` 
+
+
+
+
+# 22. Summary Statisitics on the Unfiltered Dataframe dSlopes
+```{r 22. Summary Statisitics on the Unfiltered Dataframe dSlopes}
+
+# factor(dSlopes$TrialID)
+# 
+# dSlopes <- filter(dSlopes, Treatment != "AMB")  
+# dSlopes<- droplevels(filter(dSlopes, Treatment != "AMB"))
+
+ksSlopes80.summary <- ksSlopes80 %>% group_by(Treatment) %>%
+  dplyr::summarize(sd = sd(CorrSlope, na.rm = TRUE), 
+            mean = mean(CorrSlope, na.rm = TRUE), 
+            median = median(CorrSlope, na.rm = TRUE),
+            IQR = IQR(CorrSlope, na.rm = TRUE),
+            n = n()) %>%
+  mutate(se = sd/sqrt(n)) %>%
+  mutate(ci = se*1.96)
+ksSlopes80.summary
+
+kable(ksSlopes80.summary, digits = 4)
+
+write.csv(ksSlopes80.summary, "2020.12.20_ksSlopes80_summary.csv")
+```
+
 
 
 Each treatment will have 1-4 mean values since a mean value was taken for each Trial
