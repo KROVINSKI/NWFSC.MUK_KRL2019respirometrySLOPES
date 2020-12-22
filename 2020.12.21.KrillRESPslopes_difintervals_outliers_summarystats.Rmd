@@ -33,6 +33,7 @@ R.version
 ```
 
 
+
 # Libraries
 ```{r 0.0 Libraries , echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
 #*********************************
@@ -67,6 +68,33 @@ library(gridExtra)
 library(kableExtra)
 
 ```
+
+
+*Respirometry and Project End*
+Determining Factors for Project End
+
+*Goals* Our goal is to have 4 lipid samples from each MOAT at the end of the study. A wild cohort was measured for both their size and wet weight. Whole body morts were measured to get a sense of the size for the animals.    
+*End of Study Determinations*. End of the Study was biomass dependent to be able to accomplish Lipid analysis preparation.
+
+In short 72 animals were selected for respirometry. 
+Upwards of 200 animals (including those used in respirometry trials) were prepared in the last four days of the experiment to be included in lipid analysis. 
+
+
+*Determining how to populate animals into respirometry trials*
+*Krill Doctrine*
+1.	Krill needed to fast for 24hours prior to respirometry and lipids analysis preparation 
+2.	Choose MOATs with the lowest number of animals remaining for the first round(s) of respirometry and follow on preparation for lipids analysis
+3.	Balance between MOATs across days of respirometry*
+4.	Balance between Treatments when choosing which respirometry round
+5.	Must achieve 4 vials per MOATs
+6.	Achieve 15-20 animals across treatments for respirometry
+7.	Wait until Night Time Conditions begin for the Krill to start Respirometry Trials. The night period for krill began at 1230pm. 
+
+![Krill Doctrine Version 1](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/KrillDoctrine1.png)
+
+
+
+![Krill Doctrine Version 1 Explained](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/KrillDoctrine2.png)
 
 
  
@@ -2055,8 +2083,116 @@ ksSlopes80$WetWeight<- dRESPanimal80$Size
 ```
 
 
-[insert narrative section here]
-detailing the differences about 80, 70, 1hr and all datapoints with outliers removed
+
+# 20.1a) Analysis, Respirometry - Creating Slope Functions & Linear Models  70% cutoff
+```{r 20.1a) Analysis, Respirometry - Creating Slope Functions & Linear Models  70% cutoff  }
+#*********************************
+## 20.1a) Using the 70% dataframe
+#*********************************
+# #get slopes and r^2 values from dtotal 
+
+#dtotal
+
+# ksT1to4total 
+# ks80total 
+# ks70total 
+# ks1hrtotal 
+
+
+
+###  ! ! ! Change all dSlopes to Krill Slopes etc...
+# ks80total 
+ksSlopes70 <- data.frame(KrillID = levels(ks70total$KrillID))
+
+for(i in 1:length(ksSlopes70$KrillID)){
+   m <- lm(oxygen ~ delta_t,
+                         ks70total[ks70$KrillID == ksSlopes70$KrillID[i],],
+                         na.action=na.omit)
+  ksSlopes70$slope[i] <- m$coefficients[2]
+  ksSlopes70$rsq[i] <- summary(m)$r.squared
+}
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+ksSlopes70 <- ksSlopes70 %>% group_by(KrillID)
+dRESPanimal70 <- dRESPanimal
+dRESPanimal70 <- filter(dRESPanimal, Treatment != "AMB")
+dRESPanimal70 <- dRESPanimal70 %>% group_by(SensorName)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+ksSlopes70$KrillID <- as.character(ksSlopes70$KrillID)
+
+ksSlopes70$SensorName <- dRESPanimal70$SensorName
+
+ksSlopes70$TrialID <- dRESPanimal70$TrialID
+ksSlopes70$MOATS <- dRESPanimal70$MOATS
+ksSlopes70$Treatment<- dRESPanimal70$Treatment
+ksSlopes70$LoadingLocation<- dRESPanimal70$LoadingLocation
+ksSlopes70$VialNum<- dRESPanimal70$GlassVialNumber
+ksSlopes70$TelsonLength<- dRESPanimal70$TelsonLength..mm.
+ksSlopes70$WetWeight<- dRESPanimal70$Size
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+```
+
+
+
+# 20.1a) Analysis, Respirometry - Creating Slope Functions & Linear Models  1hr cutoff
+```{r 20.1a) Analysis, Respirometry - Creating Slope Functions & Linear Models  1hr cutoff  }
+#*********************************
+## 20.1a) Using the 1hr cuttoff dataframe
+#*********************************
+# #get slopes and r^2 values from dtotal 
+
+#dtotal
+
+# ksT1to4total 
+# ks80total 
+# ks70total 
+# ks1hrtotal 
+
+
+
+###  ! ! ! Change all dSlopes to Krill Slopes etc...
+# ks80total 
+ksSlopes1hr <- data.frame(KrillID = levels(ks1hrtotal$KrillID))
+
+for(i in 1:length(ksSlopes1hr$KrillID)){
+   m <- lm(oxygen ~ delta_t,
+                         ks1hrtotal[ks1hr$KrillID == ksSlopes1hr$KrillID[i],],
+                         na.action=na.omit)
+  ksSlopes1hr$slope[i] <- m$coefficients[2]
+  ksSlopes1hr$rsq[i] <- summary(m)$r.squared
+}
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+ksSlopes1hr <- ksSlopes1hr %>% group_by(KrillID)
+dRESPanimal1hr <- dRESPanimal
+dRESPanimal1hr <- filter(dRESPanimal, Treatment != "AMB")
+dRESPanimal1hr <- dRESPanimal1hr %>% group_by(SensorName)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+ksSlopes1hr$KrillID <- as.character(ksSlopes70$KrillID)
+
+ksSlopes1hr$SensorName <- dRESPanimal70$SensorName
+
+ksSlopes1hr$TrialID <- dRESPanimal1hr$TrialID
+ksSlopes1hr$MOATS <- dRESPanimal1hr$MOATS
+ksSlopes1hr$Treatment<- dRESPanimal1hr$Treatment
+ksSlopes1hr$LoadingLocation<- dRESPanimal1hr$LoadingLocation
+ksSlopes1hr$VialNum<- dRESPanimal1hr$GlassVialNumber
+ksSlopes1hr$TelsonLength<- dRESPanimal1hr$TelsonLength..mm.
+ksSlopes1hr$WetWeight<- dRESPanimal1hr$Size
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+```
 
 
 
@@ -2261,6 +2397,96 @@ kable(ksSlopes80.summary, digits = 4)
 
 write.csv(ksSlopes80.summary, "2020.12.20_ksSlopes80_summary.csv")
 ```
+
+
+# 2x.) Analysis, Respirometry - Correcting the Slope for Blanks - 80% cutoff
+```{r 2x.) Analysis, Respirometry - Correcting the Slope for Blanks  - 80% cutoff}
+
+#*********************************
+## 2x.) Analysis, Respirometry - Correcting the Slope for Blanks  - 80% cutoff
+#*********************************
+
+#blank corrected slope and blank-size corrected slope
+## need to correct all slopes with the blanks' slope
+## this is the background respiration of whatever phtyos and instrument drift
+## create a mean blank slope per trial
+## merge with the master(krill slopes) and "correct" all slopes against mean value (per trial)
+# x is equal to the blank vials  
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+# Creating four separate means from the blank vials per trial
+x80 <- subset(ksSlopes80, ksSlopes80$MOATS == "blank")
+
+x80trial1 <- subset(x80, x80$TrialID == "Trial01")
+x80trial2 <- subset(x80, x80$TrialID == "Trial02")
+x80trial3 <- subset(x80, x80$TrialID == "Trial03")
+x80trial4 <- subset(x80, x80$TrialID == "Trial04")
+
+blank80meanslope1 <- mean(x80trial1$slope)
+blank80meanslope2 <- mean(x80trial2$slope)
+blank80meanslope3 <- mean(x80trial3$slope)
+blank80meanslope4 <- mean(x80trial4$slope)
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+#Creating new corrected variables for slopes adjusted for blank vials and size of animal
+ksSlopes80$CorrSlope <- ""
+ksSlopes80$CorrSlope <- as.numeric(ksSlopes80$CorrSlope)
+ksSlopes80$slope <- as.numeric(ksSlopes80$slope)
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+# Conditional Statement directing certain means to their respective trials
+# take absolute values not to add a negative nubmer
+
+ksSlopes80 <- ksSlopes80 %>% mutate(CorrSlope=case_when(
+    (ksSlopes80$MOATS == "blank" ~ ksSlopes80$slope),
+    (ksSlopes80$TrialID == "Trial01" ~ ksSlopes80$slope-((blank80meanslope1))),
+    (ksSlopes80$TrialID == "Trial02" ~ ksSlopes80$slope-((blank80meanslope2))),
+    (ksSlopes80$TrialID == "Trial03" ~ ksSlopes80$slope-((blank80meanslope3))),
+    (ksSlopes80$TrialID == "Trial04" ~ ksSlopes80$slope-((blank80meanslope4))),
+    TRUE ~ as.numeric(0)
+))
+
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+# Correcting for the size of the animal 
+ksSlopes80$WetWeight <- as.numeric(ksSlopes80$WetWeight)
+ksSlopes80$WetWeightSlope <- ksSlopes80$CorrSlope/ksSlopes80$WetWeight
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+#create plots and perhaps convert to larger units
+
+``` 
+
+
+
+
+# 22. Summary Statisitics on the Unfiltered Dataframe dSlopes
+```{r 22. Summary Statisitics on the Unfiltered Dataframe dSlopes}
+
+# factor(dSlopes$TrialID)
+# 
+# dSlopes <- filter(dSlopes, Treatment != "AMB")  
+# dSlopes<- droplevels(filter(dSlopes, Treatment != "AMB"))
+
+ksSlopes80.summary <- ksSlopes80 %>% group_by(Treatment) %>%
+  dplyr::summarize(sd = sd(CorrSlope, na.rm = TRUE), 
+            mean = mean(CorrSlope, na.rm = TRUE), 
+            median = median(CorrSlope, na.rm = TRUE),
+            IQR = IQR(CorrSlope, na.rm = TRUE),
+            n = n()) %>%
+  mutate(se = sd/sqrt(n)) %>%
+  mutate(ci = se*1.96)
+ksSlopes80.summary
+
+kable(ksSlopes80.summary, digits = 4)
+
+write.csv(ksSlopes80.summary, "2020.12.20_ksSlopes80_summary.csv")
+```
+
 
 
 
