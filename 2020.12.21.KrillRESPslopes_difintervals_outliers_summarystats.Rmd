@@ -998,6 +998,9 @@ T1krillslopes80time <- filter(T1krillslopes, percentDO <=.8)
 head(T1krillslopes80time$Time,1)
 #[1] "2019-10-28 16:35:20 UTC" 
 T1krillslopes80 <- filter(T1krillslopes, Time <= as.POSIXct("2019-10-28 16:35:20", tz = "UTC"))
+unique(T1krillslopes80$KrillID)
+#19levels
+
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 02 ' ' ' ' ' ' '
@@ -1009,6 +1012,8 @@ T2krillslopes80time <- filter(T2krillslopes, percentDO <=.8)
 head(T2krillslopes80time$Time,1)
 #[1] "2019-10-28 21:12:23 UTC" 
 T2krillslopes80 <- filter(T2krillslopes, Time <= as.POSIXct("2019-10-28 21:12:23", tz = "UTC"))
+unique(T2krillslopes80$KrillID)
+# 11levels
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 03 ' ' ' ' ' ' '
@@ -1021,6 +1026,9 @@ head(T3krillslopes80time$Time,1)
 #[1] "2019-10-29 15:45:19 UTC" 
 T3krillslopes80 <- filter(T3krillslopes, Time <= as.POSIXct("2019-10-29 15:45:19", tz = "UTC"))
 
+unique(T3krillslopes80$KrillID)
+#19levels
+
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 04 ' ' ' ' ' ' '
@@ -1032,7 +1040,11 @@ T4krillslopes80time <- filter(T4krillslopes, percentDO <=.8)
 head(T4krillslopes80time$Time,1)
 #[1] "2019-10-29 18:43:56 UTC" 
 T4krillslopes80 <- filter(T4krillslopes, Time <= as.POSIXct("2019-10-29 18:43:56", tz = "UTC"))
+unique(T4krillslopes80$KrillID)
+#11levels
 
+# 19+11+19+11
+# 60
 
 ```
 
@@ -1056,9 +1068,11 @@ head(T1krillslopes$Time)
 
 T1krillslopes70time <- filter(T1krillslopes, percentDO <=.7)
 head(T1krillslopes70time$Time,1)
-#[1] OSIXct of length 0
+#[1] POSIXct of length 0
 # nothing got below 70% in trial #1
 T1krillslopes70  <- T1krillslopes
+unique(T1krillslopes70$KrillID)
+#19levels
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 02 ' ' ' ' ' ' '
@@ -1069,7 +1083,10 @@ head(T2krillslopes$Time)
 T2krillslopes70time <- filter(T2krillslopes, percentDO <=.7)
 head(T2krillslopes70time$Time,1)
 #OSIXct of length 0 - no values 
-T2krillslopes70  <- T1krillslopes
+T2krillslopes70  <- T2krillslopes
+
+unique(T2krillslopes70$KrillID)
+#11 levels
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 03 ' ' ' ' ' ' '
@@ -1082,6 +1099,9 @@ head(T3krillslopes70time$Time,1)
 #[1] "2019-10-29 16:17:07 UTC" 
 T3krillslopes70 <- filter(T3krillslopes, Time <= as.POSIXct("2019-10-29 16:17:07", tz = "UTC"))
 
+unique(T3krillslopes70$KrillID)
+# 19 levels
+
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 04 ' ' ' ' ' ' '
@@ -1092,7 +1112,10 @@ head(T4krillslopes$Time)
 T4krillslopes70time <- filter(T4krillslopes, percentDO <=.7)
 head(T4krillslopes70time$Time,1)
 #[1] POSIXct of length 0
-T4krillslopes70 <- T1krillslopes
+T4krillslopes70 <- T4krillslopes
+
+
+unique(T4krillslopes70$KrillID)
 
 
 ```
