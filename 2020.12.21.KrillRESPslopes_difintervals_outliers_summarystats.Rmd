@@ -1104,6 +1104,9 @@ T4krillslopes70 <- T1krillslopes
 
 krillslopes70 <- rbind(T1krillslopes70, T2krillslopes70, T3krillslopes70, T4krillslopes70)
 
+unique(krillslopes70$KrillID)
+
+
 ```
 
 
@@ -1677,16 +1680,23 @@ krillslopes80.filtered <- rbind(T1krillslopes80.filtered,
                                 T3krillslopes80.filtered, 
                                 T4krillslopes80.filtered)
 
+unique(krillslopes80.filtered$KrillID)
+
+
 krillslopes70.filtered <- rbind(T1krillslopes70.filtered, 
                                 T2krillslopes70.filtered, 
                                 T3krillslopes70.filtered, 
                                 T4krillslopes70.filtered)
 
+unique(krillslopes70.filtered$KrillID)
 
 krillslopes1hr.filtered <- rbind(T1krillslopes1hr.filtered, 
                                 T2krillslopes1hr.filtered, 
                                 T3krillslopes1hr.filtered, 
                                 T4krillslopes1hr.filtered)
+
+unique(krillslopes1hr.filtered$KrillID)
+
 
 ```
 
