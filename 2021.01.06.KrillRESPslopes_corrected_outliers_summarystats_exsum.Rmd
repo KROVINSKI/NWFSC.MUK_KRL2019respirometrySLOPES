@@ -651,7 +651,7 @@ ggplot(T1dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
 
 ```
 ### 7.1a2) PLotting Percent DO filtering Trial 1 Colored by Round
-```{r 7.1a) PLotting Percent DO filtering Trial 1, warning=FALSE}
+```{r 7.1a2) PLotting Percent DO filtering Trial 1, warning=FALSE}
 
 T1dRESPmsr <- filter(dRESPmsr, TrialID == "Trial01")
 
@@ -1235,7 +1235,7 @@ levels(T4krillslopes$Treatment)
 
 
 ## 13.1a Investigating Outliers by Trial- cleaning up Trials Removing AMB from the 70% Threshold
-```{r 13.1a Investigating Outliers by Trial}
+```{r 13 Investigating Outliers by Trial}
 
 # Filtering down krillslopes to Trial 01, 02, 03 & 04 with only included treatments
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
@@ -1327,8 +1327,8 @@ levels(T4krillslopes$Treatment)
 
 
 *Time Series Plot for the unfiltered Krill Slopes Dataframe*
-###13.1a Investigating Outliers by Trial- timeseries plots showing the four distinct dataframes
-```{r 13.1a Investigating Outliers by Trial- timeseries plots}
+###13.1a.1 Investigating Outliers by Trial- timeseries plots showing the four distinct dataframes
+```{r Investigating Outliers by Trial- timeseries plots}
 
 par(mfrow = c(2,2))
 plot(T1krillslopes$delta_t, T1krillslopes$oxygen)
@@ -2791,6 +2791,13 @@ plot80
 ```
 
 
+```{r}
+dSlopesplot
+```
+
+
+
+
 
 ```{r}
 kable(Slope_Stats)
@@ -2805,25 +2812,19 @@ kable(ksSlopes1hr.summary, digits = 4)
 
 
 ```{r}
-kable(ksSlopes70.summary, digits = 4)
+kable(ksSlopes70.summary, digits = 8)
 ```
 
 
 ```{r}
-kable(ksSlopes80.summary, digits = 4)
+kable(ksSlopes80.summary, digits = 8)
 ```
 
 
 
-
-
-# No Further under construction
-
-
-
-
-
-
+```{r}
+kable(dSlopes.summary, digits = 8)
+```
 
 
 
@@ -3281,11 +3282,6 @@ library(ggplot2)
 
 
 
-
-
-
-
-
 ```{r}
 #**************E*N*D*************# 
 #*********************************
@@ -3296,5 +3292,3 @@ library(ggplot2)
 
 ## END OF SCRIPT | END OF DOCUMENT
 
-
-$Treatment
