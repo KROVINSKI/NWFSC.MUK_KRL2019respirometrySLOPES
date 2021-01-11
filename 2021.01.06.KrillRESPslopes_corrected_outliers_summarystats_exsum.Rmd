@@ -3065,7 +3065,7 @@ kable(dSlopes.summary, digits = 8)
 
 
 
-
+# Danielle's Code
 # z1 Danielle's fulton code to base own summary stats
 
 ```{r 1.0 Danielle's fulton code to base own summary stats}
