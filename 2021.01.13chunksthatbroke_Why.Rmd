@@ -1,0 +1,73 @@
+
+
+
+```{r}
+plot70
+```
+
+
+
+```{r}
+plot80
+```
+
+
+```{r}
+dSlopesplot
+```
+
+
+
+
+*Slope Statistics*
+```{r}
+kable(Slope_Stats)
+```
+
+
+*Krill Slopes 1hr Summary Table*
+```{r}
+kable(ksSlopes1hr.summary, digits = 4)
+```
+
+
+*Krill Slopes (70min cutoff) Summary Table*
+```{r}
+kable(ksSlopes70.summary, digits = 8)
+```
+
+
+*Krill Slopes (80min cutoff) Summary Table*
+```{r}
+kable(ksSlopes80.summary, digits = 8)
+```
+
+
+*Krill Slopes (all points) Summary Table*
+```{r}
+kable(dSlopes.summary, digits = 8)
+```
+
+
+*Krill Slopes (1hr cutoff) Mixed Effects Model*
+```{r}
+summary(lmer.ksSlopes.1hr)
+```
+
+
+*Krill Slopes (80min cutoff) Mixed Effects Model*
+```{r}
+summary(lmer.ksSlopes.80)
+```
+
+
+*Krill Slopes (70min cutoff) Mixed Effects Model*
+```{r}
+summary(lmer.ksSlopes.70)
+```
+
+
+*Krill Slopes (all points) Mixed Effects Model*
+```{r}
+summary(lmer.dSlopes)
+```
