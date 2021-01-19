@@ -649,9 +649,6 @@ dRESPmsrGOODtreatments <- dRESPmsr %>% filter(Treatment %in% c("CUR", "CHG", "TM
 
 
 
-
-
-
 # 7.) DO timeseries Plots
 
 *Initial Dataframe dRESPmsr Plots, 80% DO, Oxygen Per Vial, Actual DOmg/L*
@@ -1013,9 +1010,11 @@ T4krillslopes <- filter(krillslopes, TrialID.x == "Trial04")
 
 
 
-
 # 12.1) Filtering dtotal by each Trial and finding the 80% time
 ```{r 12.1 Filtering dtotal by each trial and finding the 80% DO times, warnings= FALSE}
+
+
+
 
 # ' ' ' ' 'TRIAL 01 ' ' ' ' ' ' ' 
 # T1krillslopes <- filter(krillslopes, TrialID.x == "Trial01")
@@ -1028,6 +1027,7 @@ head(T1krillslopes80time$Time,1)
 T1krillslopes80 <- filter(T1krillslopes, Time <= as.POSIXct("2019-10-28 16:35:20", tz = "UTC"))
 unique(T1krillslopes80$KrillID)
 #19levels
+
 
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
@@ -1208,6 +1208,20 @@ T4krillslopes1hr <- filter(T4krillslopes, T4krillslopes$Time <= as.POSIXct("2019
 krillslopes1hr <- rbind(T1krillslopes1hr, T2krillslopes1hr, T3krillslopes1hr, T4krillslopes1hr)
 
 ```
+
+
+## 12.7 Creating a Respirometry Table
+```{r}
+
+RESPgrp <- c("DayOne_TrialOne", "DayOne_TrialTwo", "DayTwo_TrialOne", "DayTwo_TrialTwo")
+
+RESPdf <- c("allpoints", "80%_DO_R.censored", "70%_DO_R.censored", "1hr_R.censored")
+
+
+```
+
+
+
 
 
 
