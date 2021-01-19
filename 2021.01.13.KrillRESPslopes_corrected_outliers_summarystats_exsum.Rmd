@@ -1014,12 +1014,12 @@ T4krillslopes <- filter(krillslopes, TrialID.x == "Trial04")
 ```{r 12.1 Filtering dtotal by each trial and finding the 80% DO times, warnings= FALSE}
 
 
-
-
 # ' ' ' ' 'TRIAL 01 ' ' ' ' ' ' ' 
 # T1krillslopes <- filter(krillslopes, TrialID.x == "Trial01")
 head(T1krillslopes$Time)
 #[1] "2019-10-28 14:25:01 UTC"
+
+T180start <- head(T1krillslopes$Time)
 
 T1krillslopes80time <- filter(T1krillslopes, percentDO <=.8)
 head(T1krillslopes80time$Time,1)
