@@ -118,7 +118,7 @@ Upwards of 200 animals (including those used in respirometry trials) were prepar
 
 
  
-# 1.) Setting Working Directory
+# 1.) Working Directory
 ```{r 1.) Setting Working Directory }
 #*********************************
 ## 1.) Setting Working Directory
@@ -130,7 +130,7 @@ setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES")
 
 
 
-# 2.) Creating the Dataframe
+# 2.) DF Creation
 ```{r 2.) Creating the Dataframe }
 
 #*********************************
@@ -179,7 +179,7 @@ dRESPmsr <- merge(dRESP, dRESPanimal, by="SensorName")
 
 
 
-# 3.) Creating dateTime objects 
+# 3.) dateTime objects 
 ```{r 3.) Creating dateTime objects }
 
 #*********************************
@@ -200,7 +200,7 @@ dRESPmsr$Time <- as.POSIXct(dRESPmsr$dateTime, format="%H:%M:%S")
 
 
 
-# 4.) Cleaning up observations
+# 4.) Observation naming
 ```{r 4.) Cleaning up observations }
 #*********************************
 ## 4.) Cleaning up observations  
@@ -226,7 +226,7 @@ write.table(UniqueSensorNames, file = "2020.11.30DRESPmsr_UniqueSensorNames.csv"
 
 
 
-#5.) Creating Trial ID & Krill ID
+#5.) Trial ID & Krill ID
 ```{r 5.) Creating Trial ID & Krill ID,  echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
 #*********************************
 ## 5.) Creating a Krill ID with Trial in name    
@@ -295,7 +295,9 @@ dRESPmsr$KrillID <- paste(dRESPmsr$TrialID, "_", dRESPmsr$SensorName, sep="")
 
 ```
 
-## 5.a Creating Round Variable
+
+
+## 5.a Round Variable
 ```{r 5.a Creating Round Variable,  echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
 
 #*********************************
@@ -522,7 +524,7 @@ as.factor(dRESPmsr$RESPRound)
 
 
 
-## 5.b Grouping by KrillID and then by Time
+## 5.b KrillID (grp & time)
 ```{r 5.b Grouping by KrillID and then by Time, echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
 #Grouping by KrillID
 dRESPmsr <- dRESPmsr %>% group_by(KrillID)
@@ -608,7 +610,7 @@ dRESPmsrGOODtreatments <- dRESPmsr %>% filter(Treatment %in% c("CUR", "CHG", "TM
 ```
 
 
-# 6.a) DO table & DO correction Plot Check
+# 6.a) DO correction QA
 ```{r 6.a) DO table & DO correction Plot Check  }
 #*********************************
 ## 6.a) DO table & DO correction Plot Check  
@@ -646,7 +648,13 @@ dRESPmsrGOODtreatments <- dRESPmsr %>% filter(Treatment %in% c("CUR", "CHG", "TM
 
 
 
-# 7.) Initial Dataframe dRESPmsr Plots, 80% DO, Oxygen Per Vial, Actual DOmg/L
+
+
+
+
+# 7.) DO timeseries Plots
+
+*Initial Dataframe dRESPmsr Plots, 80% DO, Oxygen Per Vial, Actual DOmg/L*
 
 ## Trial01 Loading Map
 ![Trial01 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial01of2(2019.10.28)respirometry.png)
