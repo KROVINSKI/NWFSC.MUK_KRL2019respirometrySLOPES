@@ -602,12 +602,6 @@ oxygen <- vialVol * dRESPmsr$actualDOmg
 dRESPmsr$oxygen <- oxygen
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-dRESPmsrGOODtreatments <- dRESPmsr %>% filter(Treatment %in% c("CUR", "CHG", "TMP"))
-
-dRESPmsr_withblanks <- dRESPmsr
-
-dRESPmsr <- dRESPmsrGOODtreatments
-
 ```
 
 
@@ -661,8 +655,18 @@ dRESPmsr$oxygen <- (dRESPmsr$oxygen*1000)
 
 
 
+# 7.) Included Treatments
+```{r}
+dRESPmsrGOODtreatments <- dRESPmsr %>% filter(Treatment %in% c("CUR", "CHG", "TMP"))
 
-# 7.) DO timeseries Plots
+dRESPmsr_withblanks <- dRESPmsr
+
+dRESPmsr <- dRESPmsrGOODtreatments
+
+```
+
+
+# 8.) DO timeseries Plots
 
 *Initial Dataframe dRESPmsr Plots, 80% DO, Oxygen Per Vial, Actual DOmg/L*
 
@@ -670,8 +674,8 @@ dRESPmsr$oxygen <- (dRESPmsr$oxygen*1000)
 ![Trial01 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial01of2(2019.10.28)respirometry.png)
 
 
-### 7.1a) PLotting Percent DO filtering Trial 1
-```{r 7.1a) PLotting Percent DO filtering Trial 1}
+### 8.1a) PLotting Percent DO filtering Trial 1
+```{r 8.1a) PLotting Percent DO filtering Trial 1}
 
 T1dRESPmsr <- filter(dRESPmsr, TrialID == "Trial01")
 
@@ -688,8 +692,8 @@ ggplot(T1dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
 
 
 ```
-### 7.1a2) PLotting Percent DO filtering Trial 1 Colored by Round
-```{r 7.1a2) PLotting Percent DO filtering Trial 1, warning=FALSE}
+### 8.1a2) PLotting Percent DO filtering Trial 1 Colored by Round
+```{r 8.1a2) PLotting Percent DO filtering Trial 1, warning=FALSE}
 
 T1dRESPmsr <- filter(dRESPmsr, TrialID == "Trial01")
 
@@ -707,8 +711,8 @@ ggplot(T1dRESPmsr, aes(x = Time, y = percentDO, colour = T1dRESPmsr$RESPRound)) 
 
 ```
 
-### 7.1b) Trial 1 Vial Oxygen over Time
-```{r 7.1b) Trial 1 Vial Oxygen over Time}
+### 8.1b) Trial 1 Vial Oxygen over Time
+```{r 8.1b) Trial 1 Vial Oxygen over Time}
 
 ggplot(T1dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
   geom_point(size = 1) +
@@ -720,7 +724,7 @@ ggplot(T1dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
 
 ```
 
-### 7.1c) Trial01 Vial Oxygen over Time Organized by Round (1 of 8)
+### 8.1c) Trial01 Vial Oxygen over Time Organized by Round (1 of 8)
 Depending on ordering there were animals that went all the way to ten rounds 
 Likely that we will only consider rounds 01 through 08 due to 80% curve.
 
@@ -729,7 +733,7 @@ Do we need to wait long for an acclimation period?
 This will have implications on future respirometry protocols if a chase period is introduced.
 
 
-```{r 7.1c) Trial01 Vial Oxygen over Time Organized by Round (1 of 8), warning=FALSE}
+```{r 8.1c) Trial01 Vial Oxygen over Time Organized by Round (1 of 8), warning=FALSE}
 
 ggplot(T1dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
   geom_point(size = 1) +
@@ -747,8 +751,8 @@ ggplot(T1dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
 ## Trial02 Loading Map
 ![Trial02 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial02of2(2019.10.28)respirometry.png)
 
-### 7.2a) PLotting Percent DO filtering Trial 2
-```{r 7.2) PLotting Percent DO filtering Trial 2}
+### 8.2a) PLotting Percent DO filtering Trial 2
+```{r 8.2) PLotting Percent DO filtering Trial 2}
 
 # T2dRESPmsr <- filter(dRESPmsr, TrialID == "Trial02") %>%
 # c("CUR", "CHG", "TMP", "n/a"))
@@ -770,8 +774,8 @@ ggplot(T2dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
 ```
 
 
-### 7.2a) Trial 2 Vial Oxygen over Time
-```{r 7.2a) Trial 2 Vial Oxygen over Time}
+### 8.2a) Trial 2 Vial Oxygen over Time
+```{r 8.2a) Trial 2 Vial Oxygen over Time}
 
 ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
   geom_point(size = 1) +
@@ -784,12 +788,12 @@ ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
 ```
 
 
-### 7.2c) Trial02 Vial Oxygen over Time Organized by Round (1 of 8)
+### 8.2c) Trial02 Vial Oxygen over Time Organized by Round (1 of 8)
 
 Second Trial,   Round 1 on 2019-10-28 began 18:50:01
 Second Trial,   Round 8 on 2019-10-28 ended 20:50:59
 
-```{r 7.2c) Trial02 Vial Oxygen over Time Organized by Round (1 of 8), warning =FALSE}
+```{r 8.2c) Trial02 Vial Oxygen over Time Organized by Round (1 of 8), warning =FALSE}
 
 ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
   geom_point(size = 1) +
@@ -806,8 +810,8 @@ ggplot(T2dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
 ![Trial03 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial01of2(2019.10.29)respirometry.png)
 
 
-### 7.3) PLotting Percent DO filtering Trial 3
-```{r 7.3) PLotting Percent DO filtering Trial 3}
+### 8.3) PLotting Percent DO filtering Trial 3
+```{r 8.3) PLotting Percent DO filtering Trial 3}
 
 T3dRESPmsr <- filter(dRESPmsr, TrialID == "Trial03")
 
@@ -826,8 +830,8 @@ ggplot(T3dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
 
 
 
-### 7.3a) Trial 3 Vial Oxygen over Time
-```{r 7.3a) Trial 3 Vial Oxygen over Time}
+### 78.3a) Trial 3 Vial Oxygen over Time
+```{r 8.3a) Trial 3 Vial Oxygen over Time}
 
 ggplot(T3dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
   geom_point(size = 1) +
@@ -840,8 +844,8 @@ ggplot(T3dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
 ```
 
 
-### 7.3c) Trial03 Vial Oxygen over Time Organized by Round (1 of 8)
-```{r 7.3c) Trial03 Vial Oxygen over Time Organized by Round (1 of 8), warning = FALSE}
+### 8.3c) Trial03 Vial Oxygen over Time Organized by Round (1 of 8)
+```{r 8.3c) Trial03 Vial Oxygen over Time Organized by Round (1 of 8), warning = FALSE}
 
 ggplot(T3dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
   geom_point(size = 1) +
@@ -859,8 +863,8 @@ ggplot(T3dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
 ## Trial04 Loading Map
 ![Trial04 Loading Map](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometrySLOPES/Trial02of2(2019.10.29)respirometry.png)
 
-### 7.4) PLotting Percent DO filtering Trial 4
-```{r 7.4) PLotting Percent DO filtering Trial 4}
+### 8.4) PLotting Percent DO filtering Trial 4
+```{r 8.4) PLotting Percent DO filtering Trial 4}
 
 T4dRESPmsr <- filter(dRESPmsr, TrialID == "Trial04")
 
@@ -879,8 +883,8 @@ ggplot(T4dRESPmsr, aes(x = Time, y = percentDO, colour = SensorName)) +
 
 
 
-### 7.4a) Trial 4 Vial Oxygen over Time
-```{r 7.4a) Trial 4 Vial Oxygen over Time}
+### 8.4a) Trial 4 Vial Oxygen over Time
+```{r 8.4a) Trial 4 Vial Oxygen over Time}
 
 ggplot(T4dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
   geom_point(size = 1) +
@@ -893,12 +897,12 @@ ggplot(T4dRESPmsr, aes(x = Time, y = oxygen, colour = KrillID)) +
 ```
 
 
-### 7.4c) Trial04 Vial Oxygen over Time Organized by Round (1 of 8)
-Acclimination period snuck in from the start
+### 8.4c) Trial04 Vial Oxygen over Time Organized by Round (1 of 8)
+Acclimation period snuck in from the start
 Second Trial,   Round 1 on 2019-10-29 began 17:23:01
 Second Trial,   Round 8 on 2019-10-29 ended 19:23:59
 
-```{r 7.4c) Trial04 Vial Oxygen over Time Organized by Round (1 of 8), warning=FALSE}
+```{r 8.4c) Trial04 Vial Oxygen over Time Organized by Round (1 of 8), warning=FALSE}
 
 ggplot(T4dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
   geom_point(size = 1) +
@@ -913,10 +917,10 @@ ggplot(T4dRESPmsr, aes(x = Time, y = oxygen, colour = RESPRound)) +
 
 
 
-# 8.) Creating Slopes
-```{r 8.) Analysis, Respirometry - Creating the Slope Function}
+# 9.) Creating Slopes
+```{r 9.) Analysis, Respirometry - Creating the Slope Function}
 #*********************************
-## 8.) Analysis, Respirometry - Creating the Slope Function  
+## 9.) Analysis, Respirometry - Creating the Slope Function  
 #*********************************  
 
 #nmol/vial; conversion for L to ml and umol to nmol cancels
@@ -957,8 +961,8 @@ cSlopes Units
 ds_blanks has 76 intercepts : includes both blanks and the ambient treatment
 
 
-### 8.1) dtotal
-```{r 8.1) Merging ds and dRESPmsr}
+### 9.1) dtotal
+```{r 9.1) Merging ds and dRESPmsr}
 #add column to dslopes thats KrillID
 #View(dref)
 ds$KrillID <- row.names(ds)
@@ -972,8 +976,8 @@ dtotal_withblanks <- merge(dRESPmsr_withblanks, ds_withblanks, by = "KrillID")
 
 
 
-### 8.2) Factor Krill ID
-```{r 8.2) Krill ID as a factor & Grouping by Krill ID}
+### 9.2) Factor Krill ID
+```{r 9.2) Krill ID as a factor & Grouping by Krill ID}
 dtotal$KrillID <- factor(dtotal$KrillID)
 nlevels(dtotal$KrillID)
 
@@ -988,11 +992,11 @@ nlevels(dtotal_withblanks$KrillID)
 51 is the number of vials when blanks are removed
 
 
-### 8.3) Slope & rsq values
+### 9.3) Slope & rsq values
 Analysis, Respirometry - Creating Slope Functions & Linear Models  
-```{r 8.3) Analysis, Respirometry - Creating Slope Functions & Linear Models  }
+```{r 9.3) Analysis, Respirometry - Creating Slope Functions & Linear Models  }
 #*********************************
-## 8.3) Creating the ds dataframe
+## 9.3) Creating the ds dataframe
 #*********************************
 # #get slopes and r^2 values from dtotal 
 
@@ -1113,8 +1117,8 @@ dSlopes_withblanks$WetWeight<- dRESPanimal$Size
 ```
 
 
-### 8.4) Filtering krillslopes by each Trial
-```{r 8.4 Filtering dtotal by each trial}
+### 9.4) Filtering krillslopes by each Trial
+```{r 9.4 Filtering dtotal by each trial}
 
 T1krillslopes <- filter(krillslopes, TrialID.x == "Trial01")
 T2krillslopes <- filter(krillslopes, TrialID.x == "Trial02")
@@ -1125,8 +1129,8 @@ T4krillslopes <- filter(krillslopes, TrialID.x == "Trial04")
 
 
 
-### 8.5) Filtering dtotal by each Trial and finding the 80% time
-```{r 8.5 Filtering dtotal by each trial and finding the 80% DO times, warnings= FALSE}
+### 9.5) Filtering dtotal by each Trial and finding the 80% time
+```{r 9.5 Filtering dtotal by each trial and finding the 80% DO times, warnings= FALSE}
 
 
 # ' ' ' ' 'TRIAL 01 ' ' ' ' ' ' ' 
