@@ -994,13 +994,16 @@ T4krillslopes <- filter(krillslopes, TrialID.x == "Trial04")
 
 
 
-# 12.1) Filtering dtotal by each Trial and finding the 80% time
-```{r 12.1 Filtering dtotal by each trial and finding the 80% DO times, warnings= FALSE}
+
+### 9.5) Filtering dtotal by each Trial and finding the 80% time
+```{r 9.5 Filtering dtotal by each trial and finding the 80% DO times, warnings= FALSE}
+
 
 # ' ' ' ' 'TRIAL 01 ' ' ' ' ' ' ' 
 # T1krillslopes <- filter(krillslopes, TrialID.x == "Trial01")
 head(T1krillslopes$Time)
 #[1] "2019-10-28 14:25:01 UTC"
+
 
 T1krillslopes80time <- filter(T1krillslopes, percentDO <=.8)
 head(T1krillslopes80time$Time,1)
@@ -1009,12 +1012,20 @@ T1krillslopes80 <- filter(T1krillslopes, Time <= as.POSIXct("2019-10-28 16:35:20
 unique(T1krillslopes80$KrillID)
 #19levels
 
+T1krillslopes <- T1krillslopes[order(T1krillslopes$Time),]
+
+T1.80.start <- head(T1krillslopes$Time,1)
+T1.80.stop <- tail(T1krillslopes80$Time,1)
+T1.80_duration <- as.numeric(T1.80.stop - T1.80.start, units = "mins")
+T1.80_duration
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 02 ' ' ' ' ' ' '
 # T2krillslopes <- filter(krillslopes, TrialID.x == "Trial02")
-head(T2krillslopes$Time)
+head(T2krillslopes$Time,1)
 #[1] "2019-10-28 18:55:21 UTC"
+
+
 
 T2krillslopes80time <- filter(T2krillslopes, percentDO <=.8)
 head(T2krillslopes80time$Time,1)
@@ -1023,11 +1034,20 @@ T2krillslopes80 <- filter(T2krillslopes, Time <= as.POSIXct("2019-10-28 21:12:23
 unique(T2krillslopes80$KrillID)
 # 11levels
 
+T2krillslopes <- T2krillslopes[order(T2krillslopes$Time),]
+
+T2.80.start <- head(T2krillslopes$Time,1)
+T2.80.stop <- tail(T2krillslopes80$Time,1)
+T2.80_duration <- as.numeric(T2.80.stop - T2.80.start, units = "mins")
+T2.80_duration
+
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 03 ' ' ' ' ' ' '
 # T3krillslopes <- filter(krillslopes, TrialID.x == "Trial03")
 head(T3krillslopes$Time)
 #[1] "2019-10-29 14:06:22 UTC"
+
+
 
 T3krillslopes80time <- filter(T3krillslopes, percentDO <=.8)
 head(T3krillslopes80time$Time,1)
@@ -1037,12 +1057,20 @@ T3krillslopes80 <- filter(T3krillslopes, Time <= as.POSIXct("2019-10-29 15:45:19
 unique(T3krillslopes80$KrillID)
 #19levels
 
+T3krillslopes <- T3krillslopes[order(T3krillslopes$Time),]
+
+T3.80.start <- head(T3krillslopes$Time,1)
+T3.80.stop <- tail(T3krillslopes80$Time,1)
+T3.80_duration <- as.numeric(T3.80.stop - T3.80.start, units = "mins")
+T3.80_duration
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 04 ' ' ' ' ' ' '
 # T4krillslopes <- filter
 head(T4krillslopes$Time)
 #[1] "2019-10-29 17:20:22 UTC"
+
+
 
 T4krillslopes80time <- filter(T4krillslopes, percentDO <=.8)
 head(T4krillslopes80time$Time,1)
@@ -1054,11 +1082,21 @@ unique(T4krillslopes80$KrillID)
 # 19+11+19+11
 # 60
 
+T4krillslopes <- T4krillslopes[order(T4krillslopes$Time),]
+
+T4.80.start <- head(T4krillslopes$Time,1)
+T4.80.start
+T4.80.stop <- tail(T4krillslopes80time$Time,1)
+T4.80.stop
+T4.80_duration <- as.numeric(T4.80.stop - T4.80.start, units = "mins")
+T4.80_duration
+
+
 ```
 
 
-## 12.2.bringing all trails back together following 80% DO selection)
-```{r 12.2.bringing all trails back together following 80% DO selection}
+### 8.6) Bringing all trials back together following 80% DO selection)
+```{r 8.6 bringing all trails back together following 80% DO selection}
 
 krillslopes80 <- rbind(T1krillslopes80, T2krillslopes80, T3krillslopes80, T4krillslopes80)
 
@@ -1066,8 +1104,8 @@ krillslopes80 <- rbind(T1krillslopes80, T2krillslopes80, T3krillslopes80, T4kril
 
 
 
-# 12.3) Filtering krill slopes by each Trial and finding the 70% time
-```{r 12.3 Filtering dtotal by each trial and finding the 80% DO times, warnings= FALSE}
+### 8.7) Filtering krill slopes by each Trial and finding the 70% time
+```{r 8.7 Filtering dtotal by each trial and finding the 70% DO times, warnings= FALSE}
 
 # ' ' ' ' 'TRIAL 01 ' ' ' ' ' ' ' 
 # T1krillslopes <- filter(krillslopes, TrialID.x == "Trial01")
@@ -1082,6 +1120,13 @@ T1krillslopes70  <- T1krillslopes
 unique(T1krillslopes70$KrillID)
 #19levels
 
+T1krillslopes <- T1krillslopes[order(T1krillslopes$Time),]
+
+T1.70.start <- head(T1krillslopes$Time,1)
+T1.70.stop <- tail(T1krillslopes70$Time,1)
+T1.70_duration <- as.numeric(T1.70.stop - T1.70.start, units = "mins")
+T1.70_duration
+
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 02 ' ' ' ' ' ' '
 # T2krillslopes <- filter(krillslopes, TrialID.x == "Trial02")
@@ -1095,6 +1140,13 @@ T2krillslopes70  <- T2krillslopes
 
 unique(T2krillslopes70$KrillID)
 #11 levels
+
+T2krillslopes <- T2krillslopes[order(T2krillslopes$Time),]
+
+T2.70.start <- head(T2krillslopes$Time,1)
+T2.70.stop <- tail(T2krillslopes70$Time,1)
+T2.70_duration <- as.numeric(T2.70.stop - T2.70.start, units = "mins")
+T2.70_duration
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 03 ' ' ' ' ' ' '
@@ -1111,6 +1163,13 @@ unique(T3krillslopes70$KrillID)
 # 19 levels
 
 
+T3krillslopes <- T3krillslopes[order(T3krillslopes$Time),]
+
+T3.70.start <- head(T3krillslopes$Time,1)
+T3.70.stop <- tail(T3krillslopes70$Time,1)
+T3.70_duration <- as.numeric(T3.70.stop - T3.70.start, units = "mins")
+T3.70_duration
+
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 04 ' ' ' ' ' ' '
 # T4krillslopes <- filter
@@ -1124,14 +1183,26 @@ T4krillslopes70 <- T4krillslopes
 
 
 unique(T4krillslopes70$KrillID)
+# 
+# T4krillslopes <- T4krillslopes[order(T4krillslopes$Time),]
+T4krillslopes70 <- T4krillslopes70[order(T4krillslopes70$Time),]
+
+T4.70.start <- head(T4krillslopes70$Time,1)
+
+T4.70.start
+T4.70.stop <- tail(T4krillslopes70$Time,1)
+T4.70.stop
+T4.70_duration <- as.numeric(T4.70.stop - T4.70.start, units = "mins")
+T4.70_duration
+
 
 
 ```
 
 
 
-## 12.4 bringing all trials back together following 70% DO selection)
-```{r 12.4 bringing all trails back together following 80% DO selection}
+### 8.8) bringing all trials back together following 70% DO selection)
+```{r 8.8 bringing all trails back together following 70% DO selection}
 
 krillslopes70 <- rbind(T1krillslopes70, T2krillslopes70, T3krillslopes70, T4krillslopes70)
 
@@ -1142,15 +1213,25 @@ unique(krillslopes70$KrillID)
 
 
 
-# 12.5) Filtering krillslopes to give each Trial only 1hr
-```{r 12.5 Filtering krill slopes by each trial with 1hr cutoff, warnings= FALSE}
+### 8.9) Filtering krillslopes to give each Trial only 1hr
+```{r 8.9 Filtering krill slopes by each trial with 1hr cutoff, warnings= FALSE}
 
 # ' ' ' ' 'TRIAL 01 ' ' ' ' ' ' ' 
 # T1krillslopes <- filter(krillslopes, TrialID.x == "Trial01")
+
 head(T1krillslopes$Time)
+T1krillslopes <- T1krillslopes[order(T1krillslopes$Time),]
+head(T1krillslopes$Time,1)
+# T1krillslopes[order(T1krillslopes$Time),]
+
 #[1] "2019-10-28 14:25:01 UTC"
 
 T1krillslopes1hr <- filter(T1krillslopes, T1krillslopes$Time <= as.POSIXct("2019-10-28 15:25:01", tz = "UTC"))
+
+T1.1hr.start <- head(T1krillslopes$Time,1)
+T1.1hr.stop <- tail(T1krillslopes1hr$Time,1)
+T1.1hr_duration <- as.numeric(T1.1hr.stop - T1.1hr.start, units = "mins")
+T1.1hr_duration
 
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 02 ' ' ' ' ' ' '
@@ -1160,6 +1241,12 @@ head(T2krillslopes$Time)
 
 T2krillslopes1hr <- filter(T2krillslopes, T2krillslopes$Time <= as.POSIXct("2019-10-28 19:55:01", tz = "UTC"))
 
+T2.1hr.start <- head(T2krillslopes$Time,1)
+T2.1hr.stop <- tail(T2krillslopes1hr$Time,1)
+T2.1hr_duration <- as.numeric(T2.1hr.stop - T2.1hr.start, units = "mins")
+T2.1hr_duration
+
+
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 03 ' ' ' ' ' ' '
 # T3krillslopes <- filter(krillslopes, TrialID.x == "Trial03")
@@ -1168,24 +1255,138 @@ head(T3krillslopes$Time)
 
 T3krillslopes1hr <- filter(T3krillslopes, T3krillslopes$Time <= as.POSIXct("2019-10-29 15:06:22", tz = "UTC"))
 
-
+T3.1hr.start <- head(T3krillslopes$Time,1)
+T3.1hr.stop <- tail(T3krillslopes1hr$Time,1)
+T3.1hr_duration <- as.numeric(T3.1hr.stop - T3.1hr.start, units = "mins")
+T3.1hr_duration
 # #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # ' ' ' ' 'TRIAL 04 ' ' ' ' ' ' '
 # T4krillslopes <- filter
-head(T4krillslopes$Time)
+T4krillslopes <- T4krillslopes[order(T4krillslopes$Time),]
+head(T4krillslopes$Time, 1)
 #[1] "2019-10-29 17:20:22 UTC"
+
 
 T4krillslopes1hr <- filter(T4krillslopes, T4krillslopes$Time <= as.POSIXct("2019-10-29 18:20:22", tz = "UTC"))
 
+
+T4.1hr.start <- head(T4krillslopes$Time,1)
+T4.1hr.stop <- tail(T4krillslopes1hr$Time,1)
+T4.1hr.stop
+T4.1hr_duration <- as.numeric(T4.1hr.stop - T4.1hr.start, units = "mins")
+T4.1hr_duration
 
 ```
 
 
 
-## 12.6 bringing all trials back together following the 1hr selection)
-```{r 12.6 bringing all trials back together following the 1hr selection}
+### 8.10) bringing all trials back together following the 1hr selection)
+```{r 8.10 bringing all trials back together following the 1hr selection}
 
 krillslopes1hr <- rbind(T1krillslopes1hr, T2krillslopes1hr, T3krillslopes1hr, T4krillslopes1hr)
+
+```
+
+
+
+
+```{r 8.10a Filtering krill slopes by each trial dtotal, warnings= FALSE}
+
+# ' ' ' ' 'TRIAL 01 ' ' ' ' ' ' ' 
+# 
+T1krillslopes <- T1krillslopes[order(T1krillslopes$Time),]
+T1.dtotal.start <- head(T1krillslopes$Time,1)
+T1.dtotal.stop <- tail(T1krillslopes$Time,1)
+T1.dtotal_duration <- as.numeric(T1.dtotal.start - T1.dtotal.stop, units = "mins")
+T1.dtotal_duration <- abs(T1.dtotal_duration)
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+# ' ' ' ' 'TRIAL 02 ' ' ' ' ' ' '
+T2krillslopes <- T2krillslopes[order(T2krillslopes$Time),]
+T2.dtotal.start <- head(T2krillslopes$Time,1)
+T2.dtotal.stop <- tail(T2krillslopes$Time,1)
+T2.dtotal_duration <- as.numeric(T2.dtotal.start - T2.dtotal.stop, units = "mins")
+T2.dtotal_duration <- abs(T2.dtotal_duration)
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+# ' ' ' ' 'TRIAL 03 ' ' ' ' ' ' '
+T3krillslopes <- T3krillslopes[order(T3krillslopes$Time),]
+T3.dtotal.start <- head(T3krillslopes$Time,1)
+T3.dtotal.stop <- tail(T3krillslopes$Time,1)
+T3.dtotal_duration <- as.numeric(T3.dtotal.start - T3.dtotal.stop, units = "mins")
+T3.dtotal_duration <- abs(T3.dtotal_duration)
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+# ' ' ' ' 'TRIAL 04 ' ' ' ' ' ' '
+T4krillslopes <- T4krillslopes[order(T4krillslopes$Time),]
+T4.dtotal.start <- head(T4krillslopes$Time,1)
+T4.dtotal.stop <- tail(T4krillslopes$Time,1)
+T4.dtotal_duration <- as.numeric(T4.dtotal.start - T4.dtotal.stop, units = "mins")
+T4.dtotal_duration <- abs(T4.dtotal_duration)
+
+```
+
+
+
+
+
+# 9.) Respirometry Table
+```{r 9.0) Creating a Respirometry Table}
+
+RESPgrp <- c("DayOne_TrialOne", "DayOne_TrialTwo", "DayTwo_TrialOne", "DayTwo_TrialTwo")
+
+RESPdf <- c("allpoints_dtotal", "80%_DO_R.censored", "70%_DO_R.censored", "1hr_R.censored")
+
+Trial1_duration <- c((T1.dtotal_duration),  
+                     (T1.80_duration), 
+                     (T1.70_duration), 
+                     (T1.1hr_duration))
+
+Trial2_duration <- c((T2.dtotal_duration),  
+                     (T2.80_duration), 
+                     (T2.70_duration), 
+                     (T2.1hr_duration))
+
+Trial3_duration <- c((T3.dtotal_duration),  
+                     (T3.80_duration), 
+                     (T3.70_duration), 
+                     (T3.1hr_duration))
+
+Trial4_duration <- c((T4.dtotal_duration),  
+                     (T4.80_duration), 
+                     (T4.70_duration), 
+                     (T4.1hr_duration))
+
+RespirometryTrialTable <- data.frame(RESPdf, 
+                                    Trial1_duration, 
+                                    Trial2_duration, 
+                                    Trial3_duration, 
+                                    Trial4_duration)
+
+write.csv(RespirometryTrialTable, "2021.01.20_RespirometryTrialTable.csv")
+
+
+# #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+# ## All points 
+# T1.allpts.start <- head(T1krillslopes$Time,1)
+# T1.allpts.stop <- tail(T1krillslopes$Time,1)
+# 
+# RespirometryTrial_d1.allpts.start <- T1.allpts.start 
+# 
+# T2.allpts.start <- head(T2krillslopes$Time,1)
+# T2.allpts.stop <- tail(T2krillslopes$Time,1)
+# 
+# T3.allpts.start <- head(T3krillslopes$Time,1)
+# T3.allpts.stop <- tail(T3krillslopes$Time,1)
+# 
+# T4.allpts.start <- head(T4krillslopes$Time,1)
+# T4.allpts.stop <- tail(T4krillslopes$Time,1)
+# 
+# RespirometryTrial_d1.allpts.stop <- T2.allpts.stop 
+# 
+# RespirometryTrial_d2.allpts.start <- T3.allpts.start 
+# RespirometryTrial_d2.allpts.stop <- T4.allpts.stop 
 
 ```
 
