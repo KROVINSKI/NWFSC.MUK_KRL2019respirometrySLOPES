@@ -992,9 +992,6 @@ T4krillslopes <- filter(krillslopes, TrialID.x == "Trial04")
 ```
 
 
-
-
-
 ### 9.5) Filtering dtotal by each Trial and finding the 80% time
 ```{r 9.5 Filtering dtotal by each trial and finding the 80% DO times, warnings= FALSE}
 
@@ -1933,6 +1930,7 @@ unique(krillslopes1hr.filtered$KrillID)
 ```
 
 
+
 # 16.) Plots Following Filtering
 ### 16.1a) Trial 1 Vial Oxygen over Time
 ```{r 16.1a) Trial 1 Vial Oxygen over Time}
@@ -2510,6 +2508,7 @@ factor(dSlopes$TrialID)
 
 dSlopes <- filter(dSlopes, Treatment != "AMB")  
 dSlopes<- droplevels(filter(dSlopes, Treatment != "AMB"))
+dSlopes<- droplevels(filter(dSlopes, Treatment != "n/a"))
 
 dSlopes.summary <- dSlopes %>% group_by(Treatment) %>%
   dplyr::summarize(sd = sd(CorrSlope, na.rm = TRUE), 
@@ -2523,7 +2522,7 @@ dSlopes.summary
 
 kable(dSlopes.summary, digits = 4)
 
-write.csv(dSlopes.summary, "2020.12.30_dSlopes_summary.csv")
+write.csv(dSlopes.summary, "2021.01.26_dSlopes_summary.csv")
 ```
 
 
@@ -2635,7 +2634,7 @@ ksSlopes80$WetWeightSlope <- ksSlopes80$CorrSlope/ksSlopes80$WetWeight
 # factor(dSlopes$TrialID)
 # 
 # dSlopes <- filter(dSlopes, Treatment != "AMB")  
-# dSlopes<- droplevels(filter(dSlopes, Treatment != "AMB"))
+ksSlopes80<- droplevels(filter(ksSlopes80, Treatment != "n/a"))
 
 ksSlopes80.summary <- ksSlopes80 %>% group_by(Treatment) %>%
   dplyr::summarize(sd = sd(CorrSlope, na.rm = TRUE), 
@@ -2649,7 +2648,7 @@ ksSlopes80.summary
 
 kable(ksSlopes80.summary, digits = 4)
 
-write.csv(ksSlopes80.summary, "2020.12.30_ksSlopes80_summary.csv")
+write.csv(ksSlopes80.summary, "2021.01.26_ksSlopes80_summary.csv")
 ```
 
 
@@ -2694,7 +2693,7 @@ ksSlopes70$slope <- as.numeric(ksSlopes70$slope)
 # take absolute values not to add a negative nubmer
 
 ksSlopes.70 <- ksSlopes70 %>% mutate(CorrSlope=case_when(
-    (ksSlopes70$MOATS == "blank" ~ ksSlopes80$slope),
+    (ksSlopes70$MOATS == "blank" ~ ksSlopes70$slope),
     (ksSlopes70$TrialID == "Trial01" ~ ksSlopes70$slope-((blank70meanslope1))),
     (ksSlopes70$TrialID == "Trial02" ~ ksSlopes70$slope-((blank70meanslope2))),
     (ksSlopes70$TrialID == "Trial03" ~ ksSlopes70$slope-((blank70meanslope3))),
@@ -2728,6 +2727,8 @@ ksSlopes70$WetWeightSlope <- ksSlopes70$CorrSlope/ksSlopes70$WetWeight
 # dSlopes <- filter(dSlopes, Treatment != "AMB")  
 # dSlopes<- droplevels(filter(dSlopes, Treatment != "AMB"))
 
+ksSlopes70<- droplevels(filter(ksSlopes70, Treatment != "n/a"))
+
 ksSlopes70.summary <- ksSlopes70 %>% group_by(Treatment) %>%
   dplyr::summarize(sd = sd(CorrSlope, na.rm = TRUE), 
             mean = mean(CorrSlope, na.rm = TRUE), 
@@ -2740,7 +2741,7 @@ ksSlopes70.summary
 
 kable(ksSlopes70.summary, digits = 4)
 
-write.csv(ksSlopes70.summary, "2020.12.30_ksSlopes70_summary.csv")
+write.csv(ksSlopes70.summary, "2021.01.26_ksSlopes70_summary.csv")
 ```
 
 
@@ -2821,7 +2822,7 @@ ksSlopes1hr$WetWeightSlope <- ksSlopes1hr$CorrSlope/ksSlopes1hr$WetWeight
 # 
 # dSlopes <- filter(dSlopes, Treatment != "AMB")  
 # dSlopes<- droplevels(filter(dSlopes, Treatment != "AMB"))
-
+ksSlopes1hr<- droplevels(filter(ksSlopes1hr, Treatment != "n/a"))
 
 ksSlopes1hr.summary <- ksSlopes1hr %>% group_by(Treatment) %>%
   dplyr::summarize(sd = sd(CorrSlope, na.rm = TRUE), 
@@ -2831,11 +2832,11 @@ ksSlopes1hr.summary <- ksSlopes1hr %>% group_by(Treatment) %>%
             n = n()) %>%
   mutate(se = sd/sqrt(n)) %>%
   mutate(ci = se*1.96)
-ksSlopes70.summary
+ksSlopes1hr.summary
 
 kable(ksSlopes1hr.summary, digits = 4)
 
-write.csv(ksSlopes1hr.summary, "2020.12.30_ksSlopes1hr_summary.csv")
+write.csv(ksSlopes1hr.summary, "2026.01.26_ksSlopes1hr_summary.csv")
 ```
 
 
@@ -2919,7 +2920,7 @@ Onehrplot <- ggplot(ksSlopes1hr, aes(Treatment, CorrSlope)) +
             # geom_jitter(aes(colour = Treatment)) +
             geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
             geom_point(data = ksSlopes1hr.summary, aes(x=Treatment, y=mean), size=5, color = "purple") + 
-            geom_errorbar(data = dSlopes.summary, 
+            geom_errorbar(data = ksSlopes1hr.summary, 
                           aes(x=Treatment, y=mean, ymin = mean-sd, ymax = mean+sd), 
                           color = "blue") +
             geom_errorbar(data = ksSlopes1hr.summary,
@@ -2947,6 +2948,14 @@ library(tidyr)
 #Remove NAs
 #krill <- na.omit(krill)
 #Calculate mean and standard deviation for each treatment per each dataset
+# blanks are to be removed from treatments
+
+dSlopes<- droplevels(filter(dSlopes, Treatment != "n/a"))
+ksSlopes80<- droplevels(filter(ksSlopes80, Treatment != "n/a"))
+ksSlopes70<- droplevels(filter(ksSlopes70, Treatment != "n/a"))
+ksSlopes1hr<- droplevels(filter(ksSlopes1hr, Treatment != "n/a"))
+
+
 dSlopes_Avg <- tapply(dSlopes$CorrSlope, (dSlopes$Treatment), mean)
 dSlopes_Med <- tapply(dSlopes$CorrSlope, (dSlopes$Treatment), median)
 dSlopes_Std <- tapply(dSlopes$CorrSlope, (dSlopes$Treatment), sd)
@@ -2973,7 +2982,7 @@ Slope_Stats <- cbind(dSlopes_Avg, dSlopes_Med, dSlopes_Std,
 colnames(Slope_Stats) [1:12] <-c("Avg All Points Corrected Slopes", "Med All Points Corrected Slopes", "All Points Corrected Slopes SD", "Avg 80% DO Corrected Slopes", "Med 80% DO Corrected Slopes", "80% DO Corrected Slopes SD", "Avg 70% DO Corrected Slopes", "Med 70% DO Corrected Slopes", "70% DO Corrected Slopes SD", "Avg 1hr Corrected Slopes", "Med 1hr Corrected Slopes", "1hr Corrected Slopes SD")
 
 
-write.csv(Slope_Stats, "2020.12.30_Slope_Stats.csv")
+write.csv(Slope_Stats, "2020.01.26_Slope_Stats.csv")
 
 kable(Slope_Stats)
 
@@ -2988,6 +2997,11 @@ library(lme4)
 library(lmerTest)
 
 # Corrected Slopes , Treatment taking into account MOATS
+
+ksSlopes.80<- droplevels(filter(ksSlopes.80, Treatment != "n/a"))
+ksSlopes.70<- droplevels(filter(ksSlopes.70, Treatment != "n/a"))
+ksSlopes.1hr<- droplevels(filter(ksSlopes.1hr, Treatment != "n/a"))
+dSlopes<- droplevels(filter(dSlopes, Treatment != "n/a"))
 
 lmer.ksSlopes.1hr <- lmer(CorrSlope ~ Treatment + (1|MOATS), data = ksSlopes.1hr)
 summary(lmer.ksSlopes.1hr)
