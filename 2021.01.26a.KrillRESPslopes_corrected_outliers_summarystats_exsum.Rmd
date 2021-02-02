@@ -2989,6 +2989,8 @@ kable(Slope_Stats)
 ```
 
 
+
+
 # 26.) Fitting my Linear Mixed-Effects Models to my Dataframes 
 ```{r Repeated measures analysis}
 #Using a mixed model to find significant differences bertween MOATs
@@ -2998,6 +3000,7 @@ library(lmerTest)
 
 # Corrected Slopes , Treatment taking into account MOATS
 
+
 ksSlopes.80<- droplevels(filter(ksSlopes.80, Treatment != "n/a"))
 ksSlopes.70<- droplevels(filter(ksSlopes.70, Treatment != "n/a"))
 ksSlopes.1hr<- droplevels(filter(ksSlopes.1hr, Treatment != "n/a"))
@@ -3005,6 +3008,14 @@ dSlopes<- droplevels(filter(dSlopes, Treatment != "n/a"))
 
 lmer.ksSlopes.1hr <- lmer(CorrSlope ~ Treatment + (1|MOATS), data = ksSlopes.1hr)
 summary(lmer.ksSlopes.1hr)
+
+
+afteraccl2$treatment <-  fct_relevel(afteraccl2$treatment, "Current")
+# read me first 
+
+
+# COXph portional hazard
+# COXme for mixed efffects
 
 lmer.ksSlopes.80 <- lmer(CorrSlope ~ Treatment + (1|MOATS), data = ksSlopes.80)
 summary(lmer.ksSlopes.80)
