@@ -3008,11 +3008,47 @@ dSlopes<- droplevels(filter(dSlopes, Treatment != "n/a"))
 
 lmer.ksSlopes.1hr <- lmer(CorrSlope ~ Treatment + (1|MOATS), data = ksSlopes.1hr)
 summary(lmer.ksSlopes.1hr)
+# All Change Against Current 
+# All Change Against High Temperature
 
 
-afteraccl2$treatment <-  fct_relevel(afteraccl2$treatment, "Current")
-# read me first 
+```
+Residuals
 
+Random Effects Model
+Variance -
+Standard Deviation -
+
+Fixed Effects
+All Change and Current
+All Change and High Temperature
+
+Correlation of Fixed Effects
+
+
+```{r}
+
+# lmer.ksSlopes.1hr <- lmer(CorrSlope ~ Treatment + (1|MOATS), data = ksSlopes.1hr)
+# summary(lmer.ksSlopes.1hr)
+
+AllChg_lmer1hr_mixed = lmer(CorrSlope ~ Treatment + (1 | MOATS), data = ksSlopes.1hr)
+summary(AllChg_lmer1hr_mixed)
+
+CUR_lmer1hr_mixed = fct_relevel(AllChg_lmer1hr_mixed$treatment, "Current")
+
+fct_relevel(lmer1hr_mixed, "Treatment", after = 2)
+
+# CurxChgxTMPlmer.ksSlopes.1hr <-  fct_relevel(lmer.ksSlopes.1hr$treatment, "Current")
+# # reads current first 
+
+
+
+```
+
+
+
+
+```{r}
 
 # COXph portional hazard
 # COXme for mixed efffects
@@ -3030,8 +3066,10 @@ summary(lmer.dSlopes)
 
 
 # what about different rounds on different days?
-
 ```
+
+
+
 
 
 
